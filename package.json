@@ -9,6 +9,10 @@
   },
   "author": "Paladin and Archer",
   "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paladinarcher/TSQ-Microservice.git"
+  },
   "dependencies": {
     "express": "*",
     "mongoose": "*",
@@ -21,7 +25,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "chai-http": "^2.0.1",
-    "mocha": "^2.4.5"
+    "chai-http": "^4.2.1",
+    "mocha": "^5.2.0"
   }
 }
