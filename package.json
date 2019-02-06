@@ -14,14 +14,15 @@
     "url": "https://github.com/paladinarcher/TSQ-Microservice.git"
   },
   "dependencies": {
-    "express": "*",
-    "mongoose": "*",
     "bcryptjs": "*",
-    "cors": "*",
-    "jsonwebtoken": "*",
     "body-parser": "*",
+    "cors": "*",
+    "express": "*",
+    "jsonwebtoken": "*",
+    "mongoose": "*",
     "passport": "*",
-    "passport-jwt": "*"
+    "passport-jwt": "*",
+    "random-key": "^0.3.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
