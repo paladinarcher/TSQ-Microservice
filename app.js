@@ -5,6 +5,13 @@ const cors = require('cors')
 const passport = require('passport')
 const mongoose = require('mongoose')
 
+const config = require('./config/database')
+
+mongoose.connect(config.database)
+
+mongoose.connection.on('connected', () => console.log('DATABASE CONNECTED: ' + config.database))
+
+mongoose.connection.on('error', (err) => console.log('DATABASE ERROR: ' + err))
 
 // init express
 const app = express()
