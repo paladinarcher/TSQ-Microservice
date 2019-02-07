@@ -5,6 +5,10 @@ const FrameworksSchema = mongoose.Schema({
 	shortName: {
 		type: String,
 	},
+	skillType: {
+		type: String,
+		default: 'framework'
+	}
 	estimatedDifficulty: {
 		type: Number
 	},

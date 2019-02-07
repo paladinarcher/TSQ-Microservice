@@ -5,6 +5,10 @@ const HighLevelConcepts = mongoose.Schema({
 	shortName: {
 		type: String,
 	},
+	skillType: {
+		type: String,
+		default: 'concept'
+	}
 	estimatedDifficulty: {
 		type: Number
 	},

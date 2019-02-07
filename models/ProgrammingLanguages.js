@@ -5,6 +5,10 @@ const ProgrammingLanguagesSchema = mongoose.Schema({
 	shortName: {
 		type: String,
 	},
+	skillType: {
+		type: String,
+		default: 'language'
+	}
 	estimatedDifficulty: {
 		type: Number
 	},

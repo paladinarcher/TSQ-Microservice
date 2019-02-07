@@ -5,6 +5,10 @@ const LibrariesSchema = mongoose.Schema({
 	shortName: {
 		type: String,
 	},
+	skillType: {
+		type: String,
+		default: 'library'
+	}
 	estimatedDifficulty: {
 		type: Number
 	},
