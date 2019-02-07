@@ -29,8 +29,28 @@ router.get('/', (req, res, next) => {
 			return res.json({ success: true, TSQData: data })
 		})
 
+	} else if (req.query.key) {
+		let key = req.query.key
+		TSQData.getTSQDataByKey(key, (err, data) => {
+			if (err) {
+				return res.json({
+					success: false,
+					msg: 'There was an error ',
+					error: err
+				})
+			}
+			if (!data) {
+				res.status(404)
+				return res.json({
+					success: false,
+					msg: 'technical skills questionaire entry not found'
+				})
+			}
+			return res.json({ success: true, TSQData: data })
+		})
+
 	} else {
-		res.send('This endpoint is for Technical Skills Questionaire data!')
+		res.send('This endpoint is for Technical Skills Questionaire data and documentation!')
 	}
 
 })
