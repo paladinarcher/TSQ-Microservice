@@ -53,4 +53,5 @@ app.get('/', (req, res) => res.send('Hello from TSQ!'))
 
 
 // tell app to listen on the port
-app.listen(port, () => console.log('Server started on port ' + port))
+module.exports = app.listen(port, () => console.log('Server started on port ' + port))
+
