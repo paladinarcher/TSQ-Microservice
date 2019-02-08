@@ -10,14 +10,6 @@ const should = chai.should()
 
 chai.use(chaiHttp)
 
-const testData = {
-	testTSQ: new TSQData({
-		_id: "5c5cc794972c11080ce18224",
-		skillList: [ "test1", "test2", "test3" ],
-		uKey: 'sldk3lk344l3kj45l'
-	})
-}
-
 describe('TSQ Data', () => {
 
   before(function (done) {
@@ -49,24 +41,75 @@ describe('TSQ Data', () => {
 
 	describe('/GET TSQData', () => {
 		it('should retrieve a technical skills questionaire entry by _id field', done => {
-			const theData = testData.testTSQ
-			const id = testData.testTSQ._id
-			theData.save(theData)
-			chai.request(server)
-				.get('/tsq/tsqData/?id=' + id)
+			const TSQ = new TSQData({
+					_id: "5c5cc794972c11080ce18224",
+					skillList: [ "test1", "test2", "test3" ],
+					uKey: 'sldk3lk344l3kj45l'
+			})
+
+			TSQ.save((err, TSQ) => {
+				chai.request(server)
+				.get('/tsq/tsqData/?id=' + TSQ._id)
 				.end( (err, res) => {
 					res.should.have.status(200)
 					res.body.should.be.a('object')
-					chai.assert(res.body.TSQData.id == id, 'endpoint not finding test data by id')
+					res.body.should.have.property('success').eql(true)
+					let result = res.body.TSQData.id
+					chai.assert(result == TSQ._id, 'API Result and DB Result do not match')
+					done()
+				})
+			})
+		})
+
+		it('should return not found for a tsq that does not exist', done => {
+			const fakeID = '5c5cc794972c11080ce18225'
+			chai.request(server)
+				.get('/tsq/tsqData/?id=' + fakeID)
+				.end( (err, res) => {
+					res.should.have.status(404)
+					res.body.should.be.a('object')
+					res.body.should.have.property('success').eql(false)
 					done()
 				})
 		})
 
 		it('should retrieve a technical skills questionaire entry by uKey field', done => {
-			console.log('this test needs to be built')
-			done()
+			const TSQ = new TSQData({
+					_id: "5c5cc794972c11080ce18224",
+					skillList: [ "test1", "test2", "test3" ],
+					uKey: 'sldk3lk344l3kj45l'
+			})
+
+			TSQ.save((err, TSQ) => {
+				chai.request(server)
+				.get('/tsq/tsqData/?key=' + TSQ.uKey)
+				.end( (err, res) => {
+					res.should.have.status(200)
+					res.body.should.be.a('object')
+					res.body.should.have.property('success').eql(true)
+					let result = res.body.TSQData.key
+					chai.assert(result == TSQ.uKey, 'API Result and DB Result do not match')
+					done()
+				})
+			})
 		})
+
+
+		it('should return not found for a tsq that does not exist', done => {
+			const fakeKey = '5c5cc794972c11080ce18225'
+			chai.request(server)
+				.get('/tsq/tsqData/?key=' + fakeKey)
+				.end( (err, res) => {
+					res.should.have.status(404)
+					res.body.should.be.a('object')
+					res.body.should.have.property('success').eql(false)
+					done()
+				})
+		})
+
+
 	})
+
 
 	describe('/POST createTSQ', () => {
 		it('should create a Technical Skills Questionaire Data Entry', done => {
