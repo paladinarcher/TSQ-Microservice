@@ -26,7 +26,14 @@ router.get('/', (req, res, next) => {
 					msg: 'technical skills questionaire entry not found'
 				})
 			}
-			return res.json({ success: true, TSQData: data })
+			return res.json({
+				success: true,
+				TSQData: {
+					id: data._id,
+					skillList: data.skillList,
+					key: data.uKey
+				}
+			})
 		})
 
 	} else if (req.query.key) {
@@ -46,7 +53,14 @@ router.get('/', (req, res, next) => {
 					msg: 'technical skills questionaire entry not found'
 				})
 			}
-			return res.json({ success: true, TSQData: data })
+			return res.json({
+				success: true,
+				TSQData: {
+					id: data._id,
+					skillList: data.skillList,
+					key: data.uKey
+				}
+			})
 		})
 
 	} else {
@@ -60,11 +74,19 @@ router.post('/createTSQ', (req, res, next) => {
 		skillList: req.body.skillList,
 	})
 
-	TSQData.createTSQ(newTSQ, (err, tsqdata) => {
+	TSQData.createTSQ(newTSQ, (err, data) => {
 		if (err) {
-			res.json({ success: false, msg: 'Failed to create TSQ Data Entry'})
+			res.json({
+				success: false,
+				msg: 'Failed to create TSQ Data Entry'
+			})
 		} else {
-			res.json({ success: true, msg: 'TSQ Data Entry Created!'})
+			res.json({
+				success: true,
+				msg: 'TSQ Data Entry Created!',
+				id: data._id,
+				key: data.uKey
+		})
 		}
 	})
 })
