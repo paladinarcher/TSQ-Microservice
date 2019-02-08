@@ -49,9 +49,9 @@ describe('TSQ Data', () => {
 
 	describe('/GET TSQData', () => {
 		it('should retrieve a technical skills questionaire entry by _id field', done => {
-			theData = testData.testTSQ
-			theData.save(theData)
+			const theData = testData.testTSQ
 			const id = testData.testTSQ._id
+			theData.save(theData)
 			chai.request(server)
 				.get('/tsq/tsqData/?id=' + id)
 				.end( (err, res) => {
