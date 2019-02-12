@@ -23,7 +23,7 @@ describe('TSQ Data', () => {
   });
 
   beforeEach(done => {
-    TSQData.remove( {}, err => {
+    TSQData.deleteMany( {}, err => {
         done();
     })
   })
@@ -103,8 +103,9 @@ describe('TSQ Data', () => {
 					res.should.have.status(404)
 					res.body.should.be.a('object')
 					res.body.should.have.property('success').eql(false)
-					done()
+					return done()
 				})
+
 		})
 
 
