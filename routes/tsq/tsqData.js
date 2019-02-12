@@ -91,4 +91,10 @@ router.post('/createTSQ', (req, res, next) => {
 	})
 })
 
+
+router.put('/updateTSQ', (req, res, next) => {})
+
+
+router.delete('/removeTSQ', (req, res, next) => {})
+
 module.exports = router
