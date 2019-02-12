@@ -127,7 +127,23 @@ router.put('/updateSkillListById/:id', (req, res, next) => {
 })
 
 
-// router.delete('/removeTSQByKey/:key', (req, res, next) => {})
+router.delete('/removeTSQByKey/:key', (req, res, next) => {
+	TSQData.removeTSQByKey(req.params.key, (err, rslt) => {
+		if (err) {
+			res.json({
+				success: false,
+				msg: err
+			})
+		} else {
+			res.json({
+				success: true,
+				msg: 'Entry removed'
+			})
+		}
+	})
+})
+
+
 // router.delete('/removeTSQById/:id', (req, res, next) => {})
 
 module.exports = router

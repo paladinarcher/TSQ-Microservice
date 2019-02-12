@@ -41,3 +41,8 @@ module.exports.updateSkillListById = function (id, skillList, callback) {
 	const query = { _id: id }
 	TSQData.update(query, { $set: skillList }, callback)
 }
+
+module.exports.removeTSQByKey = function (key, callback) {
+	const query = { uKey: key }
+	TSQData.deleteOne(query, callback)
+}
