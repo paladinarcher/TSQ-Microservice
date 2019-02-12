@@ -92,7 +92,10 @@ router.post('/createTSQ', (req, res, next) => {
 })
 
 
-router.put('/updateTSQ', (req, res, next) => {})
+router.put('/updateTSQByKey/:key', (req, res, next) => {})
+
+
+router.put('/updateTSQById/:id', (req, res, next) => {})
 
 
 router.delete('/removeTSQ', (req, res, next) => {})
