@@ -18,21 +18,26 @@ const TSQDataSchema = mongoose.Schema({
 const TSQData = module.exports = mongoose.model('TSQ_Data', TSQDataSchema)
 
 // db functions
-module.exports.createTSQ = function(data, callback) {
+module.exports.createTSQ = function (data, callback) {
 	data.ukey = rand.generate()
  	data.save(callback)
 }
 
-module.exports.getTSQDataById = function(id, callback) {
+module.exports.getTSQDataById = function (id, callback) {
 	TSQData.findById(id, callback)
 }
 
-module.exports.getTSQDataByKey = function(ukey, callback) {
+module.exports.getTSQDataByKey = function (ukey, callback) {
 	const query = { uKey: ukey }
 	TSQData.findOne(query, callback)
 }
 
- module.exports.updateSkillListByKey = function(ukey, skillList, callback) {
+ module.exports.updateSkillListByKey = function (ukey, skillList, callback) {
  	const query = { uKey: ukey }
  	TSQData.update(query, { $set: skillList }, callback)
  }
+
+module.exports.updateSkillListById = function (id, skillList, callback) {
+	const query = { _id: id }
+	TSQData.update(query, { $set: skillList }, callback)
+}
