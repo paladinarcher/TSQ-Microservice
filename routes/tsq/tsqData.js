@@ -144,6 +144,20 @@ router.delete('/removeTSQByKey/:key', (req, res, next) => {
 })
 
 
-// router.delete('/removeTSQById/:id', (req, res, next) => {})
+router.delete('/removeTSQById/:id', (req, res, next) => {
+	TSQData.removeTSQById(req.params.id, (err, rslt) => {
+		if (err) {
+			res.json({
+				success: false,
+				msg: err
+			})
+		} else {
+			res.json({
+				success: true,
+				msg: 'Entry removed'
+			})
+		}
+	})
+})
 
 module.exports = router

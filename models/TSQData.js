@@ -46,3 +46,9 @@ module.exports.removeTSQByKey = function (key, callback) {
 	const query = { uKey: key }
 	TSQData.deleteOne(query, callback)
 }
+
+
+module.exports.removeTSQById = function (id, callback) {
+	const query = { _id: id }
+	TSQData.deleteOne(query, callback)
+}
