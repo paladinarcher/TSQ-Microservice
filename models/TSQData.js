@@ -31,3 +31,8 @@ module.exports.getTSQDataByKey = function(ukey, callback) {
 	const query = { uKey: ukey }
 	TSQData.findOne(query, callback)
 }
+
+ module.exports.updateSkillListByKey = function(ukey, skillList, callback) {
+ 	const query = { uKey: ukey }
+ 	TSQData.update(query, { $set: skillList }, callback)
+ }

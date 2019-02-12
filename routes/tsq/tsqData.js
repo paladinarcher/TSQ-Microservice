@@ -92,12 +92,35 @@ router.post('/createTSQ', (req, res, next) => {
 })
 
 
-router.put('/updateTSQByKey/:key', (req, res, next) => {})
+router.put('/updateSkillListByKey/:key', (req, res, next) => {
+	console.log(req.params.key)
+	TSQData.updateSkillListByKey(req.params.key, req.body, (err, data) => {
+		console.log(data)
+		if (err) {
+			res.json({
+				success: false,
+				msg: err
+			})
+		} else {
+			res.json({
+				success: true,
+				msg: 'TSQ Skill List has been updated!',
+			})
+		}
+
+	})
+})
 
 
-router.put('/updateTSQById/:id', (req, res, next) => {})
+// router.put('/updateTSQById/:id', (req, res, next) => {
+// 	TSQData.getTSQDataById(req.params.id, (err, rslt) => {
+// 		if (err) console.log('ERROR: ' + err)
+// 		console.log(rslt)
+// 	})
+// })
 
 
-router.delete('/removeTSQ', (req, res, next) => {})
+// router.delete('/removeTSQByKey/:key', (req, res, next) => {})
+// router.delete('/removeTSQById/:id', (req, res, next) => {})
 
 module.exports = router
