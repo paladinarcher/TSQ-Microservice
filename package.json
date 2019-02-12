@@ -4,7 +4,7 @@
   "description": "microservice to hold data for technical skills evaluation",
   "main": "app.js",
   "scripts": {
-    "test": "mocha --timeout 10000",
+    "test": "mocha --timeout 10000 --exit",
     "start": "node app.js"
   },
   "author": "Paladin and Archer",

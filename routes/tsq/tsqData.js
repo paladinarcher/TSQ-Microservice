@@ -91,4 +91,73 @@ router.post('/createTSQ', (req, res, next) => {
 	})
 })
 
+
+router.put('/updateSkillListByKey/:key', (req, res, next) => {
+	TSQData.updateSkillListByKey(req.params.key, req.body, (err, rslt) => {
+		if (err) {
+			res.json({
+				success: false,
+				msg: err
+			})
+		} else {
+			res.json({
+				success: true,
+				msg: 'TSQ Skill List entry has been updated!',
+			})
+		}
+
+	})
+})
+
+
+router.put('/updateSkillListById/:id', (req, res, next) => {
+	TSQData.updateSkillListById(req.params.id, req.body, (err, rslt) => {
+			if (err) {
+				res.json({
+					success: false,
+					msg: err
+				})
+			} else {
+				res.json({
+					success: true,
+					msg: 'TSQ Skill List entry has been updated'
+				})
+			}
+	})
+})
+
+
+router.delete('/removeTSQByKey/:key', (req, res, next) => {
+	TSQData.removeTSQByKey(req.params.key, (err, rslt) => {
+		if (err) {
+			res.json({
+				success: false,
+				msg: err
+			})
+		} else {
+			res.json({
+				success: true,
+				msg: 'Entry removed'
+			})
+		}
+	})
+})
+
+
+router.delete('/removeTSQById/:id', (req, res, next) => {
+	TSQData.removeTSQById(req.params.id, (err, rslt) => {
+		if (err) {
+			res.json({
+				success: false,
+				msg: err
+			})
+		} else {
+			res.json({
+				success: true,
+				msg: 'Entry removed'
+			})
+		}
+	})
+})
+
 module.exports = router
