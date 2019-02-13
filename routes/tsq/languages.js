@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const ProgrammingLanguageData = require('../../models/ProgrammingLanguages.js')
+const LanguageData = require('../../models/Languages.js')
 
 router.post('/addLanguageData', (req, res, next) => {
-	const languageData = new ProgrammingLanguageData({
+	const languageData = new LanguageData({
 		shortName: req.body.shortName,
 		skillType: 'language',
 		averageFamiliarityScore: req.body.averageFamiliarityScore,
@@ -11,7 +11,7 @@ router.post('/addLanguageData', (req, res, next) => {
 		presentInFrameworks: req.body.presentInFrameworks
 	})
 
-	ProgrammingLanguageData.addLanguageData(languageData, (err, data) => {
+	LanguageData.addLanguageData(languageData, (err, data) => {
 		if (err) {
 			res.json({
 				success: false,
@@ -33,9 +33,9 @@ router.post('/addLanguageData', (req, res, next) => {
 	})
 })
 
-router.get('/LanguageData', (req, res, next) => {
+router.get('/languageData', (req, res, next) => {
 	if (req.query.id) {
-		ProgrammingLanguageData.getLanguageDataById(req.query.id, (err, data) => {
+		LanguageData.getLanguageDataById(req.query.id, (err, data) => {
 			if (err) {
 				res.json({
 					success: false,
@@ -49,7 +49,7 @@ router.get('/LanguageData', (req, res, next) => {
 			}
 		})
 	} else if (req.query.shortName) {
-		ProgrammingLanguageData.getLanguageDataByShortName(req.query.shortName, (err, data) => {
+		LanguageData.getLanguageDataByShortName(req.query.shortName, (err, data) => {
 			if (err) {
 				res.json({
 					success: false,
@@ -63,7 +63,7 @@ router.get('/LanguageData', (req, res, next) => {
 			}
 		})
 	} else if (req.query.familiarityScore) {
-		ProgrammingLanguageData.getLanguageDataByFamiliartyScore(req.query.familiarityScore, (err, data) => {
+		LanguageData.getLanguageDataByFamiliartyScore(req.query.familiarityScore, (err, data) => {
 			if (err) {
 				res.json({
 					success: false,
@@ -77,7 +77,7 @@ router.get('/LanguageData', (req, res, next) => {
 			}
 		})
 	} else {
-		ProgrammingLanguageData.getAllLanguageData((err, data) => {
+		LanguageData.getAllLanguageData((err, data) => {
 			if (err) {
 				res.json({
 					success: false,
