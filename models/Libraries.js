@@ -8,14 +8,14 @@ const LibrariesSchema = mongoose.Schema({
 	},
 	skillType: {
 		type: String,
-		default: 'library'
+		default: 'library',
 		required: true,
 	},
 	languages: {
 		type: [String],
-		default: []
+		default: [],
 		required: true,
-	}
+	},
 	avgFamiliarityScore: {
 		type: Number,
 		default: 0,
@@ -28,6 +28,6 @@ const LibrariesSchema = mongoose.Schema({
 	},
 })
 
-const LibrariesData = module.exports = mongoose.model('LibrariesData', LibrariesSchema)
+const LibraryData = module.exports = mongoose.model('LibrariesData', LibrariesSchema)
 
 // db functions
