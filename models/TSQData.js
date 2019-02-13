@@ -23,6 +23,10 @@ module.exports.createTSQ = function (data, callback) {
  	data.save(callback)
 }
 
+module.exports.getAllTSQData = function (callback) {
+	TSQData.find({}, callback)
+}
+
 module.exports.getTSQDataById = function (id, callback) {
 	TSQData.findById(id, callback)
 }
