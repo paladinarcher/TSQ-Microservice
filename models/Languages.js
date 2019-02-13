@@ -4,20 +4,27 @@ const config = require('../config/database')
 const LanguageDataSchema = mongoose.Schema({
 	shortName: {
 		type: String,
+		required: true,
 	},
 	skillType: {
 		type: String,
-		default: 'language'
+		default: 'language',
+		required: true,
 	},
 	languageType: {
 		type: String,
-
+		default: 'uncategorized',
+		required: true,
 	},
 	averageFamiliarityScore: {
-		type: Number
+		type: Number,
+		default: 0,
+		required: true,
 	},
 	usersFamiliar: {
-		type: Number
+		type: Number,
+		default: 0,
+		required: true,
 	},
 })
 

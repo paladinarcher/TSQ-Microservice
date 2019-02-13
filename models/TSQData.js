@@ -15,7 +15,7 @@ const TSQDataSchema = mongoose.Schema({
 	}
 })
 
-const TSQData = module.exports = mongoose.model('TSQ_Data', TSQDataSchema)
+const TSQData = module.exports = mongoose.model('TSQData', TSQDataSchema)
 
 // db functions
 module.exports.createTSQ = function (data, callback) {

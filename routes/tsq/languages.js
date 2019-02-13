@@ -6,9 +6,9 @@ router.post('/addLanguageData', (req, res, next) => {
 	const languageData = new LanguageData({
 		shortName: req.body.shortName,
 		skillType: 'language',
+		languageType: req.body.languageType,
 		averageFamiliarityScore: req.body.averageFamiliarityScore,
 		usersFamiliar: req.body.usersFamiliar,
-		presentInFrameworks: req.body.presentInFrameworks
 	})
 
 	LanguageData.addLanguageData(languageData, (err, data) => {
@@ -25,6 +25,7 @@ router.post('/addLanguageData', (req, res, next) => {
 					_id: data._id,
 					shortName: data.shortName.toLowerCase(),
 					skillType: 'language',
+					languageType: data.languageType,
 					averageFamiliarityScore: data.averageFamiliarityScore,
 					usersFamiliar: data.usersFamiliar,
 				}
