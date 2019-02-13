@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 const config = require('../config/database')
+const fs = require('fs')
+const languageTypesArray = require('./data/languageTypes')
 
 const LanguageDataSchema = mongoose.Schema({
 	shortName: {
@@ -32,7 +34,12 @@ const LanguageData = module.exports = mongoose.model('LanguageData', LanguageDat
 
 // db functions
 module.exports.addLanguageData = function (languageData, callback) {
-	languageData.save(callback)
+	console.log(languageTypesArray.indexOf(languageData.languageType))
+	if (!(languageTypesArray.indexOf(languageData.languageType) <= -1)) {
+		languageData.save(callback)
+	} else {
+		callback(' the languageType Did not match one of the current languageTypes - ' + languageTypesArray.toString(), null)
+	}
 }
 
 
@@ -59,12 +66,23 @@ module.exports.getLanguageDataByFamiliartyScore = function (familiarityScore, ca
 }
 
 
+module.exports.getLanguageDataByLanguageType = function (languageType, callback) {
+	let query = { languageType: languageType }
+	LanguageData.find(query, callback)
+}
+
 module.exports.getLanguageDataByNumberOfUsersFamiliar = function (usersFamiliar, callback) {
 
 }
 
 
+module.exports.updateLanguageData = function (id, updates, callback) {
+	let query = { _id: id }
+	LanguageData.update(query, { $set: updates }, callback)
+}
+
 module.exports.removeLanguageDataById = function (id, callback) {}
+
 
 
 module.exports.calculateAverageFamiliartyScore = function (callback) {
@@ -73,3 +91,16 @@ module.exports.calculateAverageFamiliartyScore = function (callback) {
 	  // still need to build this out
 	}, initial)
 }
+
+// TODO: fix the fs errors
+// module.exports.addNewLanguageType = function (languageType, callback) {
+// 	if (typeof(languageType) == 'string') {
+// 		let newLangTypeArr = languageTypesArray.push(languageType)
+// 		fs.writeFile('./data/languageTypes.js', newLangTypeArr, {encoding: 'UTF-8', flag: 'w'}, (err, data) => {
+// 			if (err) callback(err, null)
+// 		})
+// 		return callback(null, 'languageTypes updated. ' + languageTypesArray.toString())
+// 	} else {
+// 		return callback('TYPE ERROR: Use a string', null)
+// 	}
+// }

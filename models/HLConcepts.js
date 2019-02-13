@@ -2,22 +2,7 @@ const mongoose = require('mongoose')
 const config = require('../config/database')
 
 const HighLevelConcepts = mongoose.Schema({
-	shortName: {
-		type: String,
-	},
-	skillType: {
-		type: String,
-		default: 'concept'
-	}
-	estimatedDifficulty: {
-		type: Number
-	},
-	usersFamiliar: {
-		type: Number
-	},
-	presentInFrameworks: {
-		type: [Object]
-	}
+
 })
 
 const HighLevelConceptsData = module.exports = mongoose.model('HighLevelConcepts_Data', HighLevelConceptsSchema)

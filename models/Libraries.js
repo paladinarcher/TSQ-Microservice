@@ -4,26 +4,30 @@ const config = require('../config/database')
 const LibrariesSchema = mongoose.Schema({
 	shortName: {
 		type: String,
+		required: true,
 	},
 	skillType: {
 		type: String,
 		default: 'library'
+		required: true,
+	},
+	languages: {
+		type: [String],
+		default: []
+		required: true,
 	}
-	estimatedDifficulty: {
-		type: Number
+	avgFamiliarityScore: {
+		type: Number,
+		default: 0,
+		required: true,
 	},
 	usersFamiliar: {
-		type: Number
+		type: Number,
+		default: 0,
+		required: true,
 	},
-	presentInFrameworks: {
-		type: [Object]
-	}
 })
 
-const LibrariesData = module.exports = mongoose.model('Libraries_Data', LibrariesSchema)
+const LibrariesData = module.exports = mongoose.model('LibrariesData', LibrariesSchema)
 
 // db functions
-module.exports.getLibraryDataById = function (id, callback) {}
-module.exports.getLibraryDataByShortName = function (shortName, callback) {}
-module.exports.getLibraryDataByDifficulty = function (difficulty, callback) {}
-module.exports.getLibraryDataByFramework = function (frameworkName, callback) {}

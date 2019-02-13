@@ -15,7 +15,7 @@ router.post('/addLanguageData', (req, res, next) => {
 		if (err) {
 			res.json({
 				success: false,
-				msg: 'There was an error' + err
+				msg: 'ERROR: ' + err
 			})
 		} else {
 			res.json({
@@ -34,13 +34,30 @@ router.post('/addLanguageData', (req, res, next) => {
 	})
 })
 
+// TODO: fix the fs errors in /models/Languages.js and this route
+// router.post('/addNewLanguageTypes', (req, res, next) => {
+// 	LanguageData.addNewLanguageType(req.body.languageType, (err, data) => {
+// 		if (err) {
+// 				res.json({
+// 					success: false,
+// 					msg: err
+// 				})
+// 			} else {
+// 				res.json({
+// 					success: true,
+// 					msg: data
+// 				})
+// 			}
+// 	})
+// })
+
 router.get('/languageData', (req, res, next) => {
 	if (req.query.id) {
 		LanguageData.getLanguageDataById(req.query.id, (err, data) => {
 			if (err) {
 				res.json({
 					success: false,
-					msg: 'There was an error'
+					msg: 'ERROR: ' + err
 				})
 			} else {
 				res.json({
@@ -54,7 +71,7 @@ router.get('/languageData', (req, res, next) => {
 			if (err) {
 				res.json({
 					success: false,
-					msg: 'There was an error'
+					msg: 'ERROR: ' + err
 				})
 			} else {
 				res.json({
@@ -68,7 +85,21 @@ router.get('/languageData', (req, res, next) => {
 			if (err) {
 				res.json({
 					success: false,
-					msg: 'There was an error'
+					msg: 'ERROR: ' + err
+				})
+			} else {
+				res.json({
+					success: true,
+					data: data
+				})
+			}
+		})
+	} else if (req.query.languageType) {
+		LanguageData.getLanguageDataByLanguageType(req.query.languageType, (err, data) => {
+			if (err) {
+				res.json({
+					success: false,
+					msg: 'ERROR: ' + err
 				})
 			} else {
 				res.json({
@@ -82,7 +113,7 @@ router.get('/languageData', (req, res, next) => {
 			if (err) {
 				res.json({
 					success: false,
-					msg: 'There was an error'
+					msg: 'ERROR: ' + err
 				})
 			} else {
 				res.json({
@@ -92,6 +123,23 @@ router.get('/languageData', (req, res, next) => {
 			}
 		})
 	}
+})
+
+// TODO: Address verifying languageType
+router.put('/updateLanguageData/:id', (req, res, next) => {
+	LanguageData.updateLanguageData(req.params.id, req.body, (err, data) => {
+		if (err) {
+				res.json({
+					success: false,
+					msg: 'ERROR: ' + err
+				})
+			} else {
+				res.json({
+					success: true,
+					data: data
+				})
+			}
+	})
 })
 
 
