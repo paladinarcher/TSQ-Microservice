@@ -8,22 +8,47 @@ const ProgrammingLanguagesSchema = mongoose.Schema({
 	skillType: {
 		type: String,
 		default: 'language'
-	}
-	estimatedDifficulty: {
+	},
+	averageFamiliarityScore: {
 		type: Number
 	},
 	usersFamiliar: {
 		type: Number
 	},
-	presentInFrameworks: {
-		type: [Object]
-	}
+	// presentInFrameworks: {
+	// 	type: [Object]
+	// }
 })
 
 const ProgrammingLanguageData = module.exports = mongoose.model('ProgrammingLanguages_Data', ProgrammingLanguagesSchema)
 
 // db functions
-module.exports.getProgrammingLanguageDataById = function (id, callback) {}
-module.exports.getProgrammingLanguageDataByShortName = function (shortName, callback) {}
-module.exports.getProgrammingLanguageDataByDifficulty = function (difficulty, callback) {}
-module.exports.getProgrammingLanguageDataByFramework = function (frameworkName, callback) {}
+module.exports.addProgrammingLanguageData = function (languageData, callback) {
+	languageData.save(callback)
+}
+
+
+module.exports.getAllProgrammingLanguageData = function (callback) {
+	ProgrammingLanguageData.find({}, callback)
+}
+
+
+module.exports.getProgrammingLanguageDataById = function (id, callback) {
+	let query = { _id: id }
+	ProgrammingLanguageData.findOne(query, callback)
+}
+
+
+module.exports.getProgrammingLanguageDataByShortName = function (shortName, callback) {
+	let query = { shortName: shortName.toLowerCase() }
+	ProgrammingLanguageData.findOne(query, callback)
+}
+
+
+module.exports.getProgrammingLanguageDataByFamiliartyScore = function (familiarityScore, callback) {
+	let query = { averageFamiliarityScore: Number(familiarityScore) }
+	ProgrammingLanguageData.find(query, callback)
+}
+
+
+module.exports.getProgrammingLanguageDataByNumberOfUsersFamiliar = function (usersFamiliar, callback) {}
