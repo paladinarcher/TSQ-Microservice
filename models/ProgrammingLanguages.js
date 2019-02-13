@@ -23,32 +23,45 @@ const ProgrammingLanguagesSchema = mongoose.Schema({
 const ProgrammingLanguageData = module.exports = mongoose.model('ProgrammingLanguages_Data', ProgrammingLanguagesSchema)
 
 // db functions
-module.exports.addProgrammingLanguageData = function (languageData, callback) {
+module.exports.addLanguageData = function (languageData, callback) {
 	languageData.save(callback)
 }
 
 
-module.exports.getAllProgrammingLanguageData = function (callback) {
+module.exports.getAllLanguageData = function (callback) {
 	ProgrammingLanguageData.find({}, callback)
 }
 
 
-module.exports.getProgrammingLanguageDataById = function (id, callback) {
+module.exports.getLanguageDataById = function (id, callback) {
 	let query = { _id: id }
 	ProgrammingLanguageData.findOne(query, callback)
 }
 
 
-module.exports.getProgrammingLanguageDataByShortName = function (shortName, callback) {
+module.exports.getLanguageDataByShortName = function (shortName, callback) {
 	let query = { shortName: shortName.toLowerCase() }
 	ProgrammingLanguageData.findOne(query, callback)
 }
 
 
-module.exports.getProgrammingLanguageDataByFamiliartyScore = function (familiarityScore, callback) {
+module.exports.getLanguageDataByFamiliartyScore = function (familiarityScore, callback) {
 	let query = { averageFamiliarityScore: Number(familiarityScore) }
 	ProgrammingLanguageData.find(query, callback)
 }
 
 
-module.exports.getProgrammingLanguageDataByNumberOfUsersFamiliar = function (usersFamiliar, callback) {}
+module.exports.getLanguageDataByNumberOfUsersFamiliar = function (usersFamiliar, callback) {
+
+}
+
+
+module.exports.removeLanguageDataById = function (id, callback) {}
+
+
+module.exports.calculateAverageFamiliartyScore = function (callback) {
+	const data = ProgrammingLanguageData.find({}).fetch()
+	const avg = data.reduce((previous, current) => {
+	  // still need to build this out
+	}, initial)
+}
