@@ -10,7 +10,7 @@ const should = chai.should()
 
 chai.use(chaiHttp)
 
-describe('TSQ Data', () => {
+describe('TSQData API', () => {
 
   before(function (done) {
     mongoose.connect('mongodb://localhost/testTSQData');
@@ -28,8 +28,8 @@ describe('TSQ Data', () => {
     })
   })
 
-	describe('/GET /', () => {
-		it('should show return a status of 200', done => {
+	describe('/GET /tsqData/', () => {
+		it('it shows return a status of 200', done => {
 			chai.request(server)
 				.get('/tsq/tsqData/')
 				.end( (err, res) => {
@@ -37,10 +37,8 @@ describe('TSQ Data', () => {
 					done()
 			})
 		})
-	})
 
-	describe('/GET TSQData', () => {
-		it('should retrieve a technical skills questionaire entry by _id field', done => {
+		it('it retrieves a technical skills questionaire entry by _id field', done => {
 			const TSQ = new TSQData({
 					_id: "5c5cc794972c11080ce18224",
 					skillList: [ "test1", "test2", "test3" ],
@@ -61,7 +59,7 @@ describe('TSQ Data', () => {
 			})
 		})
 
-		it('should return not found for a tsq that does not exist', done => {
+		it('it returns not found for a tsq that does not exist', done => {
 			const fakeID = '5c5cc794972c11080ce18225'
 			chai.request(server)
 				.get('/tsq/tsqData/?id=' + fakeID)
@@ -73,7 +71,7 @@ describe('TSQ Data', () => {
 				})
 		})
 
-		it('should retrieve a technical skills questionaire entry by uKey field', done => {
+		it('it retrieves a technical skills questionaire entry by uKey field', done => {
 			const TSQ = new TSQData({
 					_id: "5c5cc794972c11080ce18224",
 					skillList: [ "test1", "test2", "test3" ],
@@ -95,7 +93,7 @@ describe('TSQ Data', () => {
 		})
 
 
-		it('should return not found for a tsq that does not exist', done => {
+		it('it returns not found for a tsq that does not exist', done => {
 			const fakeKey = '5c5cc794972c11080ce18225'
 			chai.request(server)
 				.get('/tsq/tsqData/?key=' + fakeKey)
@@ -107,31 +105,20 @@ describe('TSQ Data', () => {
 				})
 
 		})
-
-
 	})
 
 
-	describe('/POST createTSQ', () => {
-		it('should create a Technical Skills Questionaire Data Entry', done => {
-			console.log('this test needs to be built')
-			done()
-		})
+	describe('POST /tsqData/createTSQ', () => {
+		it('it creates a Technical Skills Questionaire Data Entry')
 	})
 
 
-	describe('/PUT updateTSQ', () => {
-		it('should update an already existing Technical Skills Questionaire Data Entry', done => {
-			console.log('this test needs to be built')
-			done()
-		})
+	describe('PUT /tsqData/updateTSQ', () => {
+		it('it updates an already existing Technical Skills Questionaire Data Entry')
 	})
 
 
-	describe('/DELETE removeTSQ', () => {
-		it('should delete a Technical Skills Questionaire Data Entry', done => {
-			console.log('this test needs to be built')
-			done()
-		})
+	describe('DELETE /tsqData/removeTSQ', () => {
+		it('it deletes a Technical Skills Questionaire Data Entry')
 	})
 })
