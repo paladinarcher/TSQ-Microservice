@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const ProgrammingLanguageData = require('../../models/ProgrammingLanguages.js')
 
-router.post('/addProgrammingLanguageData', (req, res, next) => {
+router.post('/addLanguageData', (req, res, next) => {
 	const languageData = new ProgrammingLanguageData({
 		shortName: req.body.shortName,
 		skillType: 'language',
@@ -11,7 +11,7 @@ router.post('/addProgrammingLanguageData', (req, res, next) => {
 		presentInFrameworks: req.body.presentInFrameworks
 	})
 
-	ProgrammingLanguageData.addProgrammingLanguageData(languageData, (err, data) => {
+	ProgrammingLanguageData.addLanguageData(languageData, (err, data) => {
 		if (err) {
 			res.json({
 				success: false,
@@ -27,16 +27,15 @@ router.post('/addProgrammingLanguageData', (req, res, next) => {
 					skillType: 'language',
 					averageFamiliarityScore: data.averageFamiliarityScore,
 					usersFamiliar: data.usersFamiliar,
-					presentInFrameworks: data.presentInFrameworks
 				}
 			})
 		}
 	})
 })
 
-router.get('/programmingLanguageData', (req, res, next) => {
+router.get('/LanguageData', (req, res, next) => {
 	if (req.query.id) {
-		ProgrammingLanguageData.getProgrammingLanguageDataById(req.query.id, (err, data) => {
+		ProgrammingLanguageData.getLanguageDataById(req.query.id, (err, data) => {
 			if (err) {
 				res.json({
 					success: false,
@@ -50,7 +49,7 @@ router.get('/programmingLanguageData', (req, res, next) => {
 			}
 		})
 	} else if (req.query.shortName) {
-		ProgrammingLanguageData.getProgrammingLanguageDataByShortName(req.query.shortName, (err, data) => {
+		ProgrammingLanguageData.getLanguageDataByShortName(req.query.shortName, (err, data) => {
 			if (err) {
 				res.json({
 					success: false,
@@ -64,7 +63,7 @@ router.get('/programmingLanguageData', (req, res, next) => {
 			}
 		})
 	} else if (req.query.familiarityScore) {
-		ProgrammingLanguageData.getProgrammingLanguageDataByFamiliartyScore(req.query.familiarityScore, (err, data) => {
+		ProgrammingLanguageData.getLanguageDataByFamiliartyScore(req.query.familiarityScore, (err, data) => {
 			if (err) {
 				res.json({
 					success: false,
@@ -78,7 +77,7 @@ router.get('/programmingLanguageData', (req, res, next) => {
 			}
 		})
 	} else {
-		ProgrammingLanguageData.getAllProgrammingLanguageData((err, data) => {
+		ProgrammingLanguageData.getAllLanguageData((err, data) => {
 			if (err) {
 				res.json({
 					success: false,
