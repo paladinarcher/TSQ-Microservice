@@ -98,7 +98,25 @@ router.get('/', (req, res, next) => {
 }) // end GET /
 
 // PUT
-router.put('/update/:id', (req, res, next) => { res.send('Update Not Built Yet') })
+// TODO: fix the db is not updating issue
+router.put('/updateName/:id', (req, res, next) => {
+	if (req.params.id) {
+		SkillData.updateSkillName(req.param.id, req.body.name, (err, data) => {
+			if (err) {
+				return res.json({
+					success: false,
+					msg: 'ERROR: ' + err
+				})
+			} else {
+				return res.json({
+					success: true,
+					msg: 'Update Complete',
+					data: data
+				})
+			}
+		})
+	}
+})
 
 // DELETE
 router.delete('/remove/:id', (req, res, next) => { res.send('Delete Not Built Yet') })
