@@ -98,10 +98,10 @@ router.get('/', (req, res, next) => {
 }) // end GET /
 
 // PUT
-// TODO: fix the db is not updating issue
 router.put('/updateName/:id', (req, res, next) => {
 	if (req.params.id) {
-		SkillData.updateSkillName(req.param.id, req.body.name, (err, data) => {
+		console.log(req.body)
+		SkillData.updateSkillName(req.params.id, req.body, (err, data) => {
 			if (err) {
 				return res.json({
 					success: false,
@@ -117,6 +117,8 @@ router.put('/updateName/:id', (req, res, next) => {
 		})
 	}
 })
+
+router.put('/updateTags/:id', (req, res, next) => {})
 
 // DELETE
 router.delete('/remove/:id', (req, res, next) => { res.send('Delete Not Built Yet') })

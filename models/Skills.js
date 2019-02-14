@@ -41,7 +41,7 @@ module.exports.getAllSkillsByTags = function (tags, callback) {
 	SkillData.find(query, callback)
 }
 
-// TODO: fix the db is not updating issue
-module.exports.updateSkillName = function (id, skillNameUpdate, callback) {
-SkillData.update({ _id: id }, {$set: {name: skillNameUpdate.toString().toLowerCase().trim()}}, callback)
+module.exports.updateSkillName = function (id, updatedName, callback) {
+	let query = { _id: id }
+	SkillData.update(query, {$set: updatedName}, callback)
 }
