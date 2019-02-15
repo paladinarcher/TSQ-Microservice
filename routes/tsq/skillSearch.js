@@ -30,7 +30,6 @@ router.post('/', (req, res, next) => {
 
 // GET
 router.get('/', (req, res, next) => {
-
 	// by id
 	if (req.query.id) {
 		SkillData.getSkillById(req.query.id, (err, data) => {
@@ -94,13 +93,11 @@ router.get('/', (req, res, next) => {
 			}
 		})
 	}
-
 }) // end GET /
 
 // PUT
 router.put('/updateName/:id', (req, res, next) => {
-	if (req.params.id) {
-		console.log(req.body)
+	if (req.body.name) {
 		SkillData.updateSkillName(req.params.id, req.body, (err, data) => {
 			if (err) {
 				return res.json({
@@ -115,12 +112,48 @@ router.put('/updateName/:id', (req, res, next) => {
 				})
 			}
 		})
+	} else {
+		return res.json({
+			success: false,
+			msg: 'ERROR: the key should be labeled name & the value should contain a string',
+			data: null
+		})
 	}
 })
 
-router.put('/updateTags/:id', (req, res, next) => {})
+router.put('/updateTags/:id', (req, res, next) => {
+	SkillData.updateSkillTags(req.params.id, req.query, req.body, (err, data) => {
+		if (err) {
+				return res.json({
+					success: false,
+					msg: 'ERROR: ' + err
+				})
+			} else {
+				return res.json({
+					success: true,
+					msg: 'Update Complete',
+					data: data
+				})
+			}
+	})
+})
 
 // DELETE
-router.delete('/remove/:id', (req, res, next) => { res.send('Delete Not Built Yet') })
+router.delete('/removeEntry/:id', (req, res, next) => {
+	SkillData.removeSkill(req.params.id, (err, data) => {
+		if (err) {
+			return res.json({
+				success: false,
+				msg: 'ERROR: ' + err
+			})
+		} else {
+			return res.json({
+				success: true,
+				msg: 'Skill Entry Removed',
+				data: data
+			})
+		}
+	})
+})
 
 module.exports = router

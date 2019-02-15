@@ -45,3 +45,24 @@ module.exports.updateSkillName = function (id, updatedName, callback) {
 	let query = { _id: id }
 	SkillData.update(query, {$set: updatedName}, callback)
 }
+
+module.exports.updateSkillTags = function (id, queryParams, reqData, callback) {
+	let query = { _id: id }
+	if (Object.keys(queryParams).indexOf('append') !== -1) {
+		if (queryParams.append === 'true') {
+			SkillData.update(query, { $addToSet: { tags: { $each: reqData.tags } } }, callback)
+		}
+	} else if (Object.keys(queryParams).indexOf('remove') !== -1) {
+		if (queryParams.remove === 'true') {
+			SkillData.update(query, { $pull: { tags: { $in: reqData.tags } } }, callback)
+		}
+	} else {
+		// append by default
+		SkillData.update(query, { $addToSet: { tags: { $each: reqData.tags } } }, callback)
+	}
+}
+
+module.exports.removeSkill = function (id, callback) {
+	let query = {_id:id}
+	SkillData.deleteOne(query, callback)
+}
