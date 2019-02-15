@@ -19,7 +19,7 @@ const app = express()
 // routes
 const tsqData = require('./routes/tsq/tsqData')
 const skillSearch = require('./routes/tsq/skillSearch')
-const userSkillData = require('./routes/tsq/userSkills')
+const userSkillData = require('./routes/tsq/skillsUser')
 
 // port variable
 const port = 4000
@@ -30,7 +30,7 @@ app.use(bodyParser.json())
 
 app.use('/tsq/tsqData', tsqData)
 app.use('/tsq/skills', skillSearch)
-app.use('/tsq/user', userSkillData)
+app.use('/tsq/skills/users', userSkillData)
 
 // route settings
 app.get('/', (req, res) => res.send('Hello from TSQ!'))

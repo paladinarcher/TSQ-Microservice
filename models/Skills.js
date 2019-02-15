@@ -13,14 +13,14 @@ const schema = mongoose.Schema({
 		default: [],
 		required: true,
 	},
-	uKeys: {
+	registeredKeys: {
 		type: [ String ],
 		default: [],
 		required: true,
 	}
 })
 
-const SkillData = module.exports = mongoose.model('SkillData', schema)
+const SkillData = module.exports = mongoose.model('Skills', schema)
 
 module.exports.addNewSkill = function (newSkill, callback) {
 	newSkill.save(callback)
