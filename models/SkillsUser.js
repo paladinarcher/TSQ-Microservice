@@ -47,3 +47,19 @@ module.exports.getUserDataByKey = function (key, callback) {
 	let query = {key: key}
 	SkillUserData.findOne(query, callback)
 }
+
+module.exports.addSkillsByKey = function (key, data, callback) {
+	let query = { key: key }
+	let updateQuery = { $addToSet: { skills: data }}
+	SkillUserData.update(query, updateQuery, callback)
+}
+
+// TODO: fix this query.  All Skills are being removed instead of
+// just those sent in the request
+module.exports.removeSkillsByKey = function (key, data, callback) {
+	let query = {key: key}
+	let updateQuery = { $pull: { skills: { $in: {  }} }}
+	console.log(key)
+	console.log(data)
+	SkillUserData.update(query, updateQuery, callback)
+}

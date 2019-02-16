@@ -81,9 +81,32 @@ router.get('/findOne/key/:key', (request, response, next) => {
 	})
 })
 
+
 // PUT
-router.put('update/id/:id', (request, response, next) => { response.send('not built') })
-router.put('update/key/:key', (request, response, next) => { response.send('not built') })
+router.put('/addSkills/key/:key', (request, response, next) => {
+	let data = request.body.skills.filter(obj => obj.hasOwnProperty('name'))
+	SkillUserData.addSkillsByKey(request.params.key, data, (error, result) => {
+		if (error) {
+			return errorResponseJson(response, error)
+		} else {
+			let payload = { payload: result }
+			return successResponseJson(response, 'Update Complete', payload)
+		}
+	})
+})
+
+// TODO: the update method on the db needs to be fixed.  All the skills
+// are being removed from the user data
+router.put('/removeSkills/key/:key', (request, response, next) => {
+	SkillUserData.removeSkillsByKey(request.params.key, request.body.skills, (error, result) => {
+		if (error) {
+			return errorResponseJson(response, error)
+		} else {
+			let payload = { payload: result }
+			return successResponseJson(response, 'Update Complete', payload)
+		}
+	})
+})
 
 // DELETE
 router.delete('remove/id/:id', (request, response, next) => { response.send('not built') })
