@@ -54,12 +54,9 @@ module.exports.addSkillsByKey = function (key, data, callback) {
 	SkillUserData.update(query, updateQuery, callback)
 }
 
-// TODO: fix this query.  All Skills are being removed instead of
-// just those sent in the request
 module.exports.removeSkillsByKey = function (key, data, callback) {
 	let query = {key: key}
-	let updateQuery = { $pull: { skills: { $in: {  }} }}
-	console.log(key)
-	console.log(data)
-	SkillUserData.update(query, updateQuery, callback)
+	let skillNames = data.map((item) => { return item.name })
+	let updateQuery = { $pull: { skills: { name: { $in: skillNames }}}}
+	SkillUserData.update(query, updateQuery, { multi: true }, callback)
 }
