@@ -17,30 +17,18 @@ mongoose.connection.on('error', (err) => console.log('DATABASE ERROR: ' + err))
 const app = express()
 
 // routes
-const tsqData = require('./routes/tsq/tsqData')
 const skillSearch = require('./routes/tsq/skillSearch')
-const languages = require('./routes/tsq/languages')
-const libraries = require('./routes/tsq/libraries')
-const frameworks = require('./routes/tsq/frameworks')
-const concepts = require('./routes/tsq/concepts')
+const userSkillData = require('./routes/tsq/skillsUser')
 
 // port variable
 const port = 4000
 
 // middleware
 app.use(cors())
-// app.use(express.static(path.join(__dirname, 'client')))
 app.use(bodyParser.json())
-// app.use(passport.initialize())
-// app.use(passport.session())
-// require('./config/passport')(passport)
 
-app.use('/tsq/tsqData', tsqData)
-app.use('/tsq/skillSearch', skillSearch)
-app.use('/tsq/languages', languages)
-app.use('/tsq/libraries', libraries)
-app.use('/tsq/frameworks', frameworks)
-app.use('/tsq/concepts', concepts)
+app.use('/tsq/skills', skillSearch)
+app.use('/tsq/skills/users', userSkillData)
 
 // route settings
 app.get('/', (req, res) => res.send('Hello from TSQ!'))
