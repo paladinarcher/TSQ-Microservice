@@ -60,3 +60,13 @@ module.exports.removeSkillsByKey = function (key, data, callback) {
 	let updateQuery = { $pull: { skills: { name: { $in: skillNames }}}}
 	SkillUserData.update(query, updateQuery, { multi: true }, callback)
 }
+
+module.exports.removeSkillDataByKey = function (key, callback) {
+	const query = { key: key }
+	SkillUserData.deleteOne(query, callback)
+}
+
+module.exports.removeSkillDataById = function (id, callback) {
+	const query = { _id: id }
+	SkillUserData.deleteOne(query, callback)
+}

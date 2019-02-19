@@ -95,8 +95,6 @@ router.put('/addSkills/key/:key', (request, response, next) => {
 	})
 })
 
-// TODO: the update method on the db needs to be fixed.  All the skills
-// are being removed from the user data
 router.put('/removeSkills/key/:key', (request, response, next) => {
 	SkillUserData.removeSkillsByKey(request.params.key, request.body.skills, (error, result) => {
 		if (error) {
@@ -108,9 +106,29 @@ router.put('/removeSkills/key/:key', (request, response, next) => {
 	})
 })
 
+
 // DELETE
-router.delete('remove/id/:id', (request, response, next) => { response.send('not built') })
-router.delete('remove/key/:key', (request, response, next) => { response.send('not built') })
+router.delete('/remove/id/:id', (request, response, next) => {
+	SkillUserData.removeSkillDataById(request.params.id, (error, result) => {
+		if (error) {
+			return errorResponseJson(response, error)
+		} else {
+			let payload = { payload: result }
+			return successResponseJson(response, 'Entry Removed', payload)
+		}
+	})
+})
+
+router.delete('/remove/key/:key', (request, response, next) => {
+	SkillUserData.removeSkillDataByKey(request.params.key, (error, result) => {
+		if (error) {
+			return errorResponseJson(response, error)
+		} else {
+			let payload = { payload: result }
+			return successResponseJson(response, 'Entry Removed', payload)
+		}
+	})
+})
 
 
 module.exports = router
