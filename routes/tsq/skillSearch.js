@@ -4,6 +4,23 @@ const SkillData = require('../../models/Skills')
 const url = require('url');
 const querystring = require('querystring');
 
+// functions
+const errorResponseJson = (response, error) => {
+	return response.json({
+		success: false,
+		message: error,
+		data: null,
+	})
+}
+
+const successResponseJson = (response, message, payload) => {
+	return response.json({
+		success: true,
+		message: message,
+		data: payload,
+	})
+}
+
 // POST
 router.post('/', (req, res, next) => {
 	let skill = new SkillData({
@@ -14,16 +31,9 @@ router.post('/', (req, res, next) => {
 
 	SkillData.addNewSkill(skill, (err, data) => {
 		if (err) {
-			return res.json({
-				success: false,
-				msg: 'ERROR: ' + err
-			})
+			return errorResponseJson(res, err)
 		} else {
-			return res.json({
-				success: true,
-				msg: 'Data Created',
-				data: data
-			})
+			return successResponseJson(res, 'Skill Entry Created', data)
 		}
 	})
 })
@@ -34,44 +44,25 @@ router.get('/', (req, res, next) => {
 	if (req.query.id) {
 		SkillData.getSkillById(req.query.id, (err, data) => {
 			if (err) {
-			return res.json({
-				success: false,
-				msg: 'ERROR: ' + err
-			})
+			return errorResponseJson(res, err)
 		} else {
-			return res.json({
-				success: true,
-				msg: 'Entry Located',
-				data: data
-			})
+			return successResponseJson(res, 'Skill Entry Located', data)
 		}
-		})
+	})
 
 	// GET by tags
 	} else if (req.query.tags) {
 		let tags = req.query.tags.toString().split(',')
 		SkillData.getAllSkillsByTags(tags, (err, data) => {
 			if (err) {
-				return res.json({
-					success: false,
-					msg: 'ERROR: ' + err
-				})
+				return errorResponseJson(res, err)
 			} else {
+				let payload = { entries: data.length, payload: data }
 				if (data.length == 0) {
 					res.status(404)
-					return res.json({
-						success: true,
-						msg: 'No Match',
-						entries: data.length,
-						data: data
-					})
+					return successResponseJson(res, 'No Match, Not Found', payload)
 				}
-				return res.json({
-					success: true,
-					msg: 'Query Complete',
-					entries: data.length,
-					data: data
-				})
+				return successResponseJson(res, 'Query Complete', payload)
 			}
 		})
 
@@ -79,17 +70,10 @@ router.get('/', (req, res, next) => {
 	} else {
 		SkillData.getAllSkills((err, data) => {
 			if (err) {
-				return res.json({
-					success: false,
-					msg: 'ERROR: ' + err
-				})
+				return errorResponseJson(res, err)
 			} else {
-				return res.json({
-					success: true,
-					msg: 'Query Complete',
-					entries: data.length,
-					data: data
-				})
+				let payload = { entries: data.length, payload: data }
+				return successResponseJson(res, 'Query Complete', payload)
 			}
 		})
 	}
@@ -100,40 +84,22 @@ router.put('/updateName/:id', (req, res, next) => {
 	if (req.body.name) {
 		SkillData.updateSkillName(req.params.id, req.body, (err, data) => {
 			if (err) {
-				return res.json({
-					success: false,
-					msg: 'ERROR: ' + err
-				})
+				return errorResponseJson(res, err)
 			} else {
-				return res.json({
-					success: true,
-					msg: 'Update Complete',
-					data: data
-				})
+				return successResponseJson(res, 'Update Complete', data)
 			}
 		})
 	} else {
-		return res.json({
-			success: false,
-			msg: 'ERROR: the key should be labeled name & the value should contain a string',
-			data: null
-		})
+		return errorResponseJson(res, 'ERROR: the key should be labeled name & the value should contain a string')
 	}
 })
 
 router.put('/updateTags/:id', (req, res, next) => {
 	SkillData.updateSkillTags(req.params.id, req.query, req.body, (err, data) => {
 		if (err) {
-				return res.json({
-					success: false,
-					msg: 'ERROR: ' + err
-				})
+				return errorResponseJson(res, err)
 			} else {
-				return res.json({
-					success: true,
-					msg: 'Update Complete',
-					data: data
-				})
+				return successResponseJson(res, 'Update Complete', data)
 			}
 	})
 })
@@ -142,16 +108,9 @@ router.put('/updateTags/:id', (req, res, next) => {
 router.delete('/removeEntry/:id', (req, res, next) => {
 	SkillData.removeSkill(req.params.id, (err, data) => {
 		if (err) {
-			return res.json({
-				success: false,
-				msg: 'ERROR: ' + err
-			})
+			return errorResponseJson(res, err)
 		} else {
-			return res.json({
-				success: true,
-				msg: 'Skill Entry Removed',
-				data: data
-			})
+			return successResponseJson(res, 'Skill Entry Removed', data)
 		}
 	})
 })
