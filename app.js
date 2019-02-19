@@ -17,7 +17,6 @@ mongoose.connection.on('error', (err) => console.log('DATABASE ERROR: ' + err))
 const app = express()
 
 // routes
-const tsqData = require('./routes/tsq/tsqData')
 const skillSearch = require('./routes/tsq/skillSearch')
 const userSkillData = require('./routes/tsq/skillsUser')
 
@@ -28,7 +27,6 @@ const port = 4000
 app.use(cors())
 app.use(bodyParser.json())
 
-app.use('/tsq/tsqData', tsqData)
 app.use('/tsq/skills', skillSearch)
 app.use('/tsq/skills/users', userSkillData)
 
