@@ -1,7 +1,7 @@
 process.env.NODE_ENV = 'test'
 
 const mongoose = require('mongoose')
-const SkillData = require('../models/Skills')
+const SkillUserData = require('../models/SkillsUser')
 const server = require('../app')
 
 const chai = require('chai')
@@ -22,7 +22,7 @@ describe('SkillsUser API Tests', () => {
   });
 
   beforeEach(done => {
-    SkillData.deleteMany( {}, err => {
+    SkillUserData.deleteMany( {}, err => {
         done();
     })
   })
@@ -31,11 +31,11 @@ describe('SkillsUser API Tests', () => {
   	it('it creates a user skills entry')
   })
 
-  describe('/GET /skills/findAll', () => {
+  describe('/GET /skills/users/findAll', () => {
   	it('it queries all the user skills entries')
   })
 
-  describe('/GET /skills/findOne', () => {
+  describe('/GET /skills/users/findOne', () => {
     it('it queries the user skills entries by key')
     it('it queries the user skills entries by id')
   })
