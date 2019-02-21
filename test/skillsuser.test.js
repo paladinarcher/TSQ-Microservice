@@ -8,6 +8,22 @@ const chai = require('chai')
 const chaiHttp = require('chai-http')
 const should = chai.should()
 
+const skillUserURL = '/tsq/skills/users'
+
+
+const testData = {
+  userEntry: {
+    skills: []
+  },
+  userEntryWithSkills: {
+    skills: [
+      {name: 'python', familiarityScore: 3},
+      {name: 'java', familiarityScore: 5},
+      {name: 'gardening', familiarityScore: 5},
+    ]
+  }
+}
+
 chai.use(chaiHttp)
 
 describe('SkillsUser API Tests', () => {
@@ -28,7 +44,22 @@ describe('SkillsUser API Tests', () => {
   })
 
   describe('/POST /skills/users/register', () => {
-  	it('it creates a user skills entry')
+  	it('it creates a user skills entry', (done) => {
+      chai.request(server)
+        .post(skillUserURL + '/register/')
+        .send(testData.userEntry)
+        .end((error, response) => {
+          if (error) {
+            console.log(error)
+          }
+            should.exist(response.body)
+            response.should.have.status(200)
+            response.body.should.be.a('object')
+            response.body.should.have.property('success').eql(true)
+          done()
+        })
+    })
+
   })
 
   describe('/GET /skills/users/findAll', () => {
