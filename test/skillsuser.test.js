@@ -44,7 +44,7 @@ describe('SkillsUser API Tests', () => {
   })
 
   describe('/POST /skills/users/register', () => {
-  	it('it creates a user skills entry', (done) => {
+  	it('it creates a user skills entry', done => {
       chai.request(server)
         .post(skillUserURL + '/register/')
         .send(testData.userEntry)
@@ -63,7 +63,21 @@ describe('SkillsUser API Tests', () => {
   })
 
   describe('/GET /skills/users/findAll', () => {
-  	it('it queries all the user skills entries')
+  	it('it queries all the user skills entries', done => {
+      chai.request(server)
+          .get(skillUserURL + '/findall')
+          .end((error, response) => {
+            if (error) {
+              console.log(error)
+            }
+              should.exist(response.body)
+              response.should.have.status(200)
+              response.body.should.be.a('object')
+              response.body.should.have.property('success').eql(true)
+              response.body.data.should.have.property('entries').eql(0)
+            done()
+          })
+    })
   })
 
   describe('/GET /skills/users/findOne', () => {
