@@ -18,6 +18,8 @@ const testData = {
     skills: []
   },
   userEntryWithSkills: {
+    _id: '5c70404993c5e936388577dd',
+    key: 'thisIsth3K3y',
     skills: [
       {name: 'python', familiarityScore: 3},
       {name: 'java', familiarityScore: 5},
@@ -119,11 +121,53 @@ describe('SkillsUser API Tests', () => {
   })
 
   describe('/UPDATE /skills/users/addSkills/', () => {
-  	it('it adds skills by name to a userskills entry')
+  	it('it adds skills by name to a userskills entry', done => {
+      let userData = new SkillUserData(testData.userEntry)
+      let newSkillsData = {
+        skills: [
+          {name: 'test-skill-1', familiarityScore: 3},
+          {name: 'test-skill-2'}
+        ]
+      }
+      userData.save((error, data) => console.log(data._id))
+
+        chai.request(server)
+          .put(skillUserURL + '/addSkills/key/' + testData.userEntry.key)
+          .send(newSkillsData)
+          .end((error, response) => {
+            should.exist(response.body)
+            response.should.have.status(200)
+            response.body.should.be.a('object')
+            response.body.should.have.property('success').eql(true)
+            response.body.should.have.property('message').eql('Update Complete')
+            chai.assert(response.body.data.payload.nModified == 1,
+              'The entry did not update')
+            done()
+          })
+    })
   })
 
   describe('/UPDATE /skills/users/removeSkills/', () => {
-    it('it adds skills by skillname to a userskills entry')
+    it('it removes skills by skillname to a userskills entry', done => {
+      let newUserSkillEntry = new SkillUserData(testData.userEntryWithSkills)
+      let skillsToRemove = {
+        skills: [
+          {name: 'gardening'}
+        ]
+      }
+
+      chai.request(server)
+        .put(skillUserURL + '/removeSkills/key/' + testData.userEntryWithSkills.key)
+        .send(skillsToRemove)
+        .end((error, response) => {
+          should.exist(response.body)
+          response.should.have.status(200)
+          response.body.should.be.a('object')
+          response.body.should.have.property('success').eql(true)
+          console.log(response.body.data)
+          done()
+        })
+    })
   })
 
   describe('/DELETE /skills/users/remove', () => {
