@@ -81,7 +81,25 @@ describe('SkillsUser API Tests', () => {
   })
 
   describe('/GET /skills/users/findOne', () => {
-    it('it queries the user skills entries by key')
+    it('it queries the user skills entries by key', done => {
+      let userData = new SkillUserData(testData.userEntry)
+      userData.save((error, data) => console.log(data))
+      let entryToCheckAgainst = SkillUserData.findOne({ skills: [] })
+      console.log(entryToCheckAgainst.key)
+
+      chai.request(server)
+        .get(skillUserURL + '/findOne/key/' + entryToCheckAgainst.key)
+        .end((error, response) => {
+          if (error) {
+            console.log(error)
+          }
+            should.exist(response.body)
+            response.should.have.status(200)
+            response.body.should.be.a('object')
+            console.log(response.body)
+            done()
+        })
+    })
     it('it queries the user skills entries by id')
   })
 
