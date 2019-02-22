@@ -25,7 +25,24 @@ const testData = {
       {name: 'java', familiarityScore: 5},
       {name: 'gardening', familiarityScore: 5},
     ]
+  },
+  skillsToRemove: {
+    skills: [
+      {name: 'gardening'}
+    ]
+  },
+  skillsToAdd: {
+    skills: [
+      {name: 'test-skill-1', familiarityScore: 3},
+      {name: 'test-skill-2'}
+    ]
   }
+}
+
+function addAUserSkillEntry (userSkillEntryObject) {
+  userSkillEntryObject = new SkillUserData(userSkillEntryObject)
+  userSkillEntryObject.save()
+  return
 }
 
 chai.use(chaiHttp)
@@ -86,8 +103,7 @@ describe('SkillsUser API Tests', () => {
 
   describe('/GET /skills/users/findOne', () => {
     it('it queries the user skills entries by key', done => {
-    let userData = new SkillUserData(testData.userEntry)
-    userData.save()
+    addAUserSkillEntry(testData.userEntry)
       chai.request(server)
         .get(skillUserURL + '/findOne/key/' + testData.userEntry.key)
         .end((error, response) => {
@@ -104,8 +120,7 @@ describe('SkillsUser API Tests', () => {
         })
     })
     it('it queries the user skills entries by id', done => {
-      let userData = new SkillUserData(testData.userEntry)
-      userData.save((error, data) => console.log(data._id))
+      addAUserSkillEntry(testData.userEntry)
         chai.request(server)
           .get(skillUserURL + '/findOne/id/' + testData.userEntry._id)
           .end((error, response) => {
@@ -122,18 +137,10 @@ describe('SkillsUser API Tests', () => {
 
   describe('/UPDATE /skills/users/addSkills/', () => {
   	it('it adds skills by name to a userskills entry', done => {
-      let userData = new SkillUserData(testData.userEntry)
-      let newSkillsData = {
-        skills: [
-          {name: 'test-skill-1', familiarityScore: 3},
-          {name: 'test-skill-2'}
-        ]
-      }
-      userData.save((error, data) => console.log(data._id))
-
+      addAUserSkillEntry(testData.userEntry)
         chai.request(server)
           .put(skillUserURL + '/addSkills/key/' + testData.userEntry.key)
-          .send(newSkillsData)
+          .send(testData.skillsToAdd)
           .end((error, response) => {
             should.exist(response.body)
             response.should.have.status(200)
@@ -142,6 +149,7 @@ describe('SkillsUser API Tests', () => {
             response.body.should.have.property('message').eql('Update Complete')
             chai.assert(response.body.data.payload.nModified == 1,
               'The entry did not update')
+            // TODO: fix this test to work better
             done()
           })
     })
@@ -149,29 +157,57 @@ describe('SkillsUser API Tests', () => {
 
   describe('/UPDATE /skills/users/removeSkills/', () => {
     it('it removes skills by skillname to a userskills entry', done => {
-      let newUserSkillEntry = new SkillUserData(testData.userEntryWithSkills)
-      let skillsToRemove = {
-        skills: [
-          {name: 'gardening'}
-        ]
-      }
-
+      // prepare the data
+      addAUserSkillEntry(testData.userEntryWithSkills)
+      // make request on the server
       chai.request(server)
         .put(skillUserURL + '/removeSkills/key/' + testData.userEntryWithSkills.key)
-        .send(skillsToRemove)
+        .send(testData.skillsToRemove)
         .end((error, response) => {
           should.exist(response.body)
           response.should.have.status(200)
           response.body.should.be.a('object')
           response.body.should.have.property('success').eql(true)
-          console.log(response.body.data)
+          chai.assert(response.body.data.payload.nModified == 1,
+            'The entry did not update')
+          // TODO: fix this test to work better.
           done()
         })
     })
   })
 
   describe('/DELETE /skills/users/remove', () => {
-    it('it removes user skill entries by id')
-  	it('it removes user skill entries by key')
+    it('it removes user skill entries by id', done => {
+      addAUserSkillEntry(testData.userEntry)
+      chai.request(server)
+        .delete(skillUserURL + '/remove/id/' + testData.userEntry._id)
+        .end((error, response) => {
+          if (error) console.log(error)
+          should.exist(response.body)
+          response.should.have.status(200)
+          response.body.should.be.a('object')
+          response.body.should.have.property('success').eql(true)
+          SkillUserData.findOne({_id: testData.userEntry._id}, (error, data) => {
+            chai.assert(data == null, 'the entry still exists in the db')
+          })
+        done()
+        })
+    })
+  	it('it removes user skill entries by key', done => {
+      addAUserSkillEntry(testData.userEntry)
+      chai.request(server)
+        .delete(skillUserURL + '/remove/key/' + testData.userEntry.key)
+        .end((error, response) => {
+          if (error) console.log(error)
+          should.exist(response.body)
+          response.should.have.status(200)
+          response.body.should.be.a('object')
+          response.body.should.have.property('success').eql(true)
+          SkillUserData.findOne({key: testData.userEntry.key}, (error, data) => {
+            chai.assert(data == null, 'the entry still exists in the db')
+          })
+        done()
+        })
+    })
   })
 })
