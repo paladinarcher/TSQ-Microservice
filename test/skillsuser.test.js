@@ -13,6 +13,8 @@ const skillUserURL = '/tsq/skills/users'
 
 const testData = {
   userEntry: {
+    _id: '5c70404993c5e936388577dd',
+    key: 'thisIsth3K3y',
     skills: []
   },
   userEntryWithSkills: {
@@ -82,13 +84,10 @@ describe('SkillsUser API Tests', () => {
 
   describe('/GET /skills/users/findOne', () => {
     it('it queries the user skills entries by key', done => {
-      let userData = new SkillUserData(testData.userEntry)
-      userData.save((error, data) => console.log(data))
-      let entryToCheckAgainst = SkillUserData.findOne({ skills: [] })
-      console.log(entryToCheckAgainst.key)
-
+    let userData = new SkillUserData(testData.userEntry)
+    userData.save()
       chai.request(server)
-        .get(skillUserURL + '/findOne/key/' + entryToCheckAgainst.key)
+        .get(skillUserURL + '/findOne/key/' + testData.userEntry.key)
         .end((error, response) => {
           if (error) {
             console.log(error)
@@ -96,11 +95,27 @@ describe('SkillsUser API Tests', () => {
             should.exist(response.body)
             response.should.have.status(200)
             response.body.should.be.a('object')
-            console.log(response.body)
+            response.body.data.payload.should.be.a('object')
+            chai.assert(response.body.data.payload.key == testData.userEntry.key,
+              'the key from the payload does not match the entry created')
             done()
         })
     })
-    it('it queries the user skills entries by id')
+    it('it queries the user skills entries by id', done => {
+      let userData = new SkillUserData(testData.userEntry)
+      userData.save((error, data) => console.log(data._id))
+        chai.request(server)
+          .get(skillUserURL + '/findOne/id/' + testData.userEntry._id)
+          .end((error, response) => {
+            should.exist(response.body)
+            response.should.have.status(200)
+            response.body.should.be.a('object')
+            response.body.data.payload.should.be.a('object')
+            chai.assert(response.body.data.payload._id == testData.userEntry._id,
+              'the id from the payload does not match the entry created')
+            done()
+          })
+    })
   })
 
   describe('/UPDATE /skills/users/addSkills/', () => {
