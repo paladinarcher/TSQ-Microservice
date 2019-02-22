@@ -10,6 +10,35 @@ const should = chai.should()
 
 chai.use(chaiHttp)
 
+const TestData = {
+  testSkill1: {
+    _id: '5c70404993c5e936388577dd',
+    name: 'basic-test-skill'
+  },
+  testSkill2: {
+    _id: '5c70404993c5e936388577dd',
+    name: 'test-skill-with-tags',
+    tags: [
+      'tag-1', 'tag-2', 'tag-3'
+    ]
+  },
+  tagsToAdd: {
+    tags: ['tag-4']
+  },
+  tagsToRemove: {
+    tags: ['tag-1']
+  },
+  nameToUpdate: {
+    name: 'new-name'
+  },
+}
+
+function addSkillEntry (skillDataObj) {
+  skillDataObj = new SkillData(skillDataObj)
+  skillDataObj.save()
+  return
+}
+
 describe('Skills API Tests', () => {
 	before(function (done) {
     mongoose.connect('mongodb://localhost/testTSQData');
