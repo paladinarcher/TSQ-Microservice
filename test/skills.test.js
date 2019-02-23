@@ -65,7 +65,11 @@ describe('Skills API Tests', () => {
       .send(TestData.testSkill1)
       .end((error, response) => {
         if (error) console.log(error)
-        console.log(response.body)
+        should.exist(response.body)
+        response.should.have.status(200)
+        response.body.should.have.property('success').eql(true)
+        chai.assert(response.body.data.name == 'basic-test-skill',
+          'skill was not created')
         done()
       })
     })
