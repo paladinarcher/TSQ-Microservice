@@ -10,6 +10,8 @@ const should = chai.should()
 
 chai.use(chaiHttp)
 
+const URL = '/tsq/skills'
+
 const TestData = {
   testSkill1: {
     _id: '5c70404993c5e936388577dd',
@@ -41,7 +43,7 @@ function addSkillEntry (skillDataObj) {
 
 describe('Skills API Tests', () => {
 	before(function (done) {
-    mongoose.connect('mongodb://localhost/testTSQData');
+    mongoose.connect('mongodb://localhost:27017/testTSQData');
     const db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error'));
     db.once('open', function() {
@@ -57,7 +59,16 @@ describe('Skills API Tests', () => {
   })
 
   describe('/POST /skills/', () => {
-  	it('it creates a skill entry')
+  	it('it creates a skill entry', done => {
+      chai.request(server)
+      .post(URL + '/')
+      .send(TestData.testSkill1)
+      .end((error, response) => {
+        if (error) console.log(error)
+        console.log(response.body)
+        done()
+      })
+    })
   })
 
   describe('/GET /skills/', () => {

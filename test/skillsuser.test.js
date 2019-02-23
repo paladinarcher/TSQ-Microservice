@@ -49,7 +49,7 @@ chai.use(chaiHttp)
 
 describe('SkillsUser API Tests', () => {
 	before(function (done) {
-    mongoose.connect('mongodb://localhost/testTSQData');
+    mongoose.connect('mongodb://localhost:27017/testTSQData');
     const db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error'));
     db.once('open', function() {
