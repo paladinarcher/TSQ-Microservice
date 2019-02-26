@@ -46,7 +46,8 @@ router.get('/', (req, res, next) => {
 			if (err) {
 			return errorResponseJson(res, err)
 		} else {
-			return successResponseJson(res, 'Skill Entry Located', data)
+			let payload = { entries: data.length, payload: data }
+			return successResponseJson(res, 'Skill Entry Located', payload)
 		}
 	})
 

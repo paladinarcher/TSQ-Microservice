@@ -76,9 +76,41 @@ describe('Skills API Tests', () => {
   })
 
   describe('/GET /skills/', () => {
-  	it('it queries all the skills entries')
-  	it('it queries all the skills entries by key')
-  	it('it queries all the skills entries by id')
+  	it('it queries all the skills entries', done => {
+      chai.request(server)
+        .get(URL + '/')
+        .end((error, response) => {
+          if (error) console.log(error)
+          chai.assert(response.body, 'No response body -- line 84')
+          chai.assert(response.status === 200,
+            'Status assertion not met -- line 86')
+          chai.assert(response.body.success === true,
+            'Success assert not fulfilled -- line 87')
+          chai.assert(response.body.data.entries === 0,
+            'Entries assert not fulfilled -- line 88')
+          done()
+        })
+    })
+  	it('it queries all the skills entries by id', done => {
+      addSkillEntry(TestData.testSkill1)
+      const ID = TestData.testSkill1._id
+
+      chai.request(server)
+        .get(URL + '/?' + ID)
+        .end((error, response) => {
+          chai.assert(response.body,
+            'response body does not exist')
+          chai.assert(response.status === 200,
+            'response status is not 200')
+          chai.assert(response.body.success === true,
+            'success is not true')
+          chai.assert(typeof(response.body.data) === 'object',
+            '"data" is not an object')
+          chai.assert(response.body.data.payload[0]._id == ID,
+            'the id does not match the query result id')
+          done()
+        })
+    })
   	it('it queries all the skills entries by tags')
   })
 
