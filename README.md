@@ -16,6 +16,11 @@
 
 1. run `docker-compose up`
 
+### Running Tests
+
+1. run `npm test`
+(this will run the tests still locally, but doesn't connect to the tsqdb)
+
 ## License
 
 [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
