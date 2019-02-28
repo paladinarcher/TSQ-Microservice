@@ -4,12 +4,8 @@
 
 ## System Requirements
 
-- Node JS & NPM
-- Mongo
-
-### Recommended For Development (But not required)
-
-- Nodemon
+- Node JS (8.0+) & NPM
+- Docker
 
 ## Installation
 
@@ -18,7 +14,7 @@
 
 ### Starting Up the Project
 
-1. run `npm start` or `nodemon` if you have the Nodemon pkg installed
+1. run `docker-compose up`
 
 ## License
 
