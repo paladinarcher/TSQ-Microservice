@@ -8,7 +8,12 @@ const skillsData = {
 		type: String,
 		required: true,
 	},
-	familiarityScore: {
+	familiarity: {
+		type: boolean,
+		default: false,
+		required: true
+	},
+	confidenceLevel: {
 		type: Number,
 		default: 0,
 		required: true,
