@@ -9,7 +9,7 @@ const skillsData = {
 		required: true,
 	},
 	familiar: {
-		type: boolean,
+		type: Boolean,
 		default: false,
 		required: true
 	},
