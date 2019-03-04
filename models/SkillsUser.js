@@ -8,7 +8,7 @@ const skillsData = {
 		type: String,
 		required: true,
 	},
-	familiarity: {
+	familiar: {
 		type: boolean,
 		default: false,
 		required: true
