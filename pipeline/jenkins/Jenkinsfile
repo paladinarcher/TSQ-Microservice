@@ -19,7 +19,8 @@ pipeline {
 			steps {
 				echo "Run tests"
 				sh "mongo --version"
-				sh "mongod"
+				sh "mongod &"
+				sh "sleep 30s"
 				sh "npm test"
 			}
 		}
