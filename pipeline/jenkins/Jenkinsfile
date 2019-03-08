@@ -26,10 +26,9 @@ pipeline {
 		}
 		stage('Deploy') {
 			steps {
-				sh "cd .. && pwd"
-				// sh "cd .. && tar -czf tsq.tar.gz TSQ-Microservice/"
-				// sh "cd .. && scp -r -o StrictHostKeyChecking=no -i /home/.ssh/rigel-alpha.pem ./tsq.tar.gz ec2-user@stage.developerlevel.com:/home/ec2-user/tsq/pipeline/prod/"
-				// sh "ssh -o StrictHostKeyChecking=no -i /home/.ssh/rigel-alpha.pem ec2-user@stage.developerlevel.com source /home/ec2-user/tsq/pipeline/prod/docker-build.sh"
+				sh "tar -czf /tmp/tsq.tar.gz ."
+				sh "scp -r -o StrictHostKeyChecking=no -i /home/.ssh/rigel-alpha.pem /tmp/tsq.tar.gz ec2-user@stage.developerlevel.com:/home/ec2-user/tsq/pipeline/prod/"
+				sh "ssh -o StrictHostKeyChecking=no -i /home/.ssh/rigel-alpha.pem ec2-user@stage.developerlevel.com source /home/ec2-user/tsq/pipeline/prod/docker-build.sh"
 			}
 		}
 	}
