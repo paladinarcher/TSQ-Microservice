@@ -3,10 +3,12 @@ process.env.NODE_ENV = 'test'
 const mongoose = require('mongoose')
 const SkillUserData = require('../models/SkillsUser')
 const server = require('../app')
+const config = require('../config/testing')
 
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 const should = chai.should()
+
 
 const skillUserURL = '/tsq/skills/users'
 
@@ -49,7 +51,7 @@ chai.use(chaiHttp)
 
 describe('SkillsUser API Tests', () => {
 	before(function (done) {
-    mongoose.connect('mongodb://localhost:27017/testTSQData');
+    mongoose.connect(config.database);
     const db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error'));
     db.once('open', function() {

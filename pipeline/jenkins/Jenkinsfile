@@ -1,0 +1,32 @@
+pipeline {
+	agent {
+		dockerfile {
+			filename "pipeline/jenkins/Dockerfile"
+			args "--entrypoint=''"
+		}
+	}
+	environment {
+		LC_ALL='en_US.UTF-8'
+		LANG='en_US.UTF-8'
+	}
+	stages {
+		stage('Build API') {
+			steps {
+				sh "npm i"
+			}
+		}
+		stage('Test') {
+			steps {
+				echo "Run tests"
+				sh "npm test"
+			}
+		}
+		stage('Deploy') {
+			steps {
+				sh "cd .. && tar -czf tsq.tar.gz TSQ-Microservice/"
+				sh "cd .. && scp -r -o StrictHostKeyChecking=no -i /home/.ssh/rigel-alpha.pem ./tsq.tar.gz ec2-user@stage.developerlevel.com:/home/ec2-user/tsq/pipeline/prod/"
+				sh "ssh -o StrictHostKeyChecking=no -i /home/.ssh/rigel-alpha.pem ec2-user@stage.developerlevel.com source /home/ec2-user/tsq/pipeline/prod/docker-build.sh"
+			}
+		}
+	}
+}

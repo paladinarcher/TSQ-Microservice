@@ -3,6 +3,7 @@ process.env.NODE_ENV = 'test'
 const mongoose = require('mongoose')
 const SkillData = require('../models/Skills')
 const server = require('../app')
+const config = require('../config/testing')
 
 const chai = require('chai')
 const chaiHttp = require('chai-http')
@@ -43,7 +44,7 @@ function addSkillEntry (skillDataObj) {
 
 describe('Skills API Tests', () => {
 	before(function (done) {
-    mongoose.connect('mongodb://localhost:27017/testTSQData');
+    mongoose.connect(config.database);
     const db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error'));
     db.once('open', function() {

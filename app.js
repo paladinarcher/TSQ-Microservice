@@ -5,7 +5,15 @@ const cors = require('cors')
 const passport = require('passport')
 const mongoose = require('mongoose')
 
-const config = require('./config/database')
+let config;
+
+
+if (process.env.NODE_ENV == 'test') {
+ config = require('./config/testing')
+} else {
+ config = require('./config/database')
+}
+
 
 mongoose.connect(config.database)
 
