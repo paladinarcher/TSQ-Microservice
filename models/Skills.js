@@ -32,6 +32,12 @@ module.exports.getSkillById = function (id, callback) {
 	SkillData.findOne(query, callback)
 }
 
+
+module.exports.getSkillByName = function (name, callback) {
+	let query = { name: name }
+	SkillData.findOne(query, callback)
+}
+
 module.exports.getAllSkills = function (callback) {
 	SkillData.find(callback)
 }
