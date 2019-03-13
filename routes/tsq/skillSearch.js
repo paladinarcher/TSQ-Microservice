@@ -51,6 +51,21 @@ router.get('/', (req, res, next) => {
 		}
 	})
 
+	// GET by name
+	} else if (req.query.name && req.query.name !== '') {
+		SkillData.getSkillByName(req.query.name, (err, data) => {
+			if (err) {
+				return errorResponseJson(res, err)
+			} else {
+				let payload = { payload: data }
+				if (data === null) {
+					res.status(404)
+					return successResponseJson(res, 'No Match, Not Found', payload)
+				}
+				return successResponseJson(res, 'Skill Entry Located', payload)
+			}
+		})
+
 	// GET by tags
 	} else if (req.query.tags) {
 		let tags = req.query.tags.toString().split(',')
