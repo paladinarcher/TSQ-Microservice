@@ -13,11 +13,11 @@ const schema = mongoose.Schema({
 		default: [],
 		required: true,
 	},
-	registeredKeys: {
-		type: [ String ],
-		default: [],
-		required: true,
-	}
+	// registeredKeys: {
+	// 	type: [ String ],
+	// 	default: [],
+	// 	required: true,
+	// }
 })
 
 const SkillData = module.exports = mongoose.model('Skills', schema)
@@ -45,6 +45,12 @@ module.exports.getAllSkills = function (callback) {
 module.exports.getAllSkillsByTags = function (tags, callback) {
 	let query = {tags: { $all: tags }}
 	SkillData.find(query, callback)
+}
+
+module.exports.getRandomSampleOfSkills = function (number, callback) {
+	let n  = Number(number)
+	let query = { $sample: { size: n } }
+	SkillData.aggregate([query], callback) 
 }
 
 module.exports.updateSkillName = function (id, updatedName, callback) {

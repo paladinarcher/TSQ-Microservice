@@ -24,7 +24,7 @@ const successResponseJson = (response, message, payload) => {
 // POST
 router.post('/', (req, res, next) => {
 	let skill = new SkillData({
-		name: req.body.name,
+		name: req.body.name.toUpperCase().trim(),
 		tags: req.body.tags,
 		keys: req.body.keys,
 	})
@@ -94,6 +94,20 @@ router.get('/', (req, res, next) => {
 		})
 	}
 }) // end GET /
+
+router.get('/randomSkills/:number', (request, response, next) => {
+	if (request.params.number > 0) {
+		SkillData.getRandomSampleOfSkills(request.params.number, (error, data) => {
+			if (error) {
+				console.log(error)
+				return errorResponseJson(response, error)
+			} else {
+				let payload = { payload: data }
+				return successResponseJson(response, 'Query Complete', payload)
+			}
+		})
+	}
+})
 
 // PUT
 router.put('/updateName/:id', (req, res, next) => {
