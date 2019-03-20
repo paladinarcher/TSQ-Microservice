@@ -11,7 +11,7 @@ services:
         volumes:
             - .:/usr/src/app
         ports:
-            - "4100:4000"
+            - "4000:4000"
         extra_hosts:
             - "serverhost:172.17.0.1"
         command: ["npm", "start"]
