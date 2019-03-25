@@ -75,3 +75,13 @@ module.exports.removeSkillDataById = function (id, callback) {
 	const query = { _id: id }
 	SkillUserData.deleteOne(query, callback)
 }
+
+module.exports.updateFamiliarityByKey = function (key, skill, familiar, callback) {
+	const query = { key: key }
+	SkillUserData.updateOne(query, 
+		{ $set: { 'skills.$[skillObject].familiar': familiar } }, 
+		{ arrayFilters: [ 
+			{ 'skillObject.name': { $eq: skill } } 
+		]}, 
+		callback)
+}
