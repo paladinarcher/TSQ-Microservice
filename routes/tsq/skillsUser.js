@@ -81,6 +81,20 @@ router.get('/findOne/key/:key', (request, response, next) => {
 	})
 })
 
+router.get('/findSkill/key/:key', (request, response, next) => {
+	SkillUserData.getUserSkillByKey(request.params.key, request.query.skill, (error, data) => {
+		if (error) {
+			return errorResponseJson(response, error)
+		} else if (data.length === 0) {
+			response.status(404)
+			let payload = { entries: data.length, payload: null }
+			return successResponseJson(response, 'No Skill Match for Key', payload)
+		} else {
+			let payload = { entries: data.length, payload: data }
+			return successResponseJson(response, 'Query Successful', payload)
+		}
+	})
+})
 
 // PUT
 router.put('/addSkills/key/:key', (request, response, next) => {

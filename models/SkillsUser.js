@@ -53,6 +53,17 @@ module.exports.getUserDataByKey = function (key, callback) {
 	SkillUserData.findOne(query, callback)
 }
 
+module.exports.getUserSkillByKey = function (key, skill, callback) {
+	console.log(skill)
+	// let skillFindQuery = { $elemMatch: { skills: { name: skill }}}
+	// let skillFindQuery = { $elemMatch: { name: { $eq: skill } }}
+	let query = {
+		key: key,
+		"skills.name" : skill
+	}
+	SkillUserData.find(query, callback)
+}
+
 module.exports.addSkillsByKey = function (key, data, callback) {
 	let query = { key: key }
 	let updateQuery = { $addToSet: { skills: data }}
