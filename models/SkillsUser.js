@@ -1,12 +1,14 @@
 const mongoose = require('mongoose')
+const Schema = mongoose.Schema;
 const config = require('../config/database')
 const rand = require('random-key')
+const SkillData = require('./Skills')
 
 
 const skillsData = {
 	name: {
-		type: String,
-		required: true,
+		type: Schema.Types.ObjectId,
+		ref: 'Skills'
 	},
 	familiar: {
 		type: Boolean,
@@ -50,7 +52,8 @@ module.exports.getUserDataById = function (id, callback) {
 
 module.exports.getUserDataByKey = function (key, callback) {
 	let query = {key: key}
-	SkillUserData.findOne(query, callback)
+	SkillUserData.findOne(query).populate('skills.name').exec(callback);
+	});
 }
 
 module.exports.getUserSkillByKey = function (key, skill, callback) {
@@ -66,8 +69,17 @@ module.exports.getUserSkillByKey = function (key, skill, callback) {
 
 module.exports.addSkillsByKey = function (key, data, callback) {
 	let query = { key: key }
-	let updateQuery = { $addToSet: { skills: data }}
-	SkillUserData.update(query, updateQuery, callback)
+	console.log("addSkillsByKey", key, data);
+	SkillData.findOne( {_id: data[0].id}, (err, dat) => {
+		console.log("findOne",err,dat);
+		if (null !== dat) {
+			data[0].name = dat._id;
+			let updateQuery = { $addToSet: { skills: data }}
+			SkillUserData.update(query, updateQuery, callback);
+		} else {
+			callback(null, null);
+		}
+	} );
 }
 
 module.exports.removeSkillsByKey = function (key, data, callback) {
@@ -89,10 +101,10 @@ module.exports.removeSkillDataById = function (id, callback) {
 
 module.exports.updateFamiliarityByKey = function (key, skill, familiar, callback) {
 	const query = { key: key }
-	SkillUserData.updateOne(query, 
-		{ $set: { 'skills.$[skillObject].familiar': familiar } }, 
-		{ arrayFilters: [ 
-			{ 'skillObject.name': { $eq: skill } } 
-		]}, 
+	SkillUserData.updateOne(query,
+		{ $set: { 'skills.$[skillObject].familiar': familiar } },
+		{ arrayFilters: [
+			{ 'skillObject.name': { $eq: skill } }
+		]},
 		callback)
 }

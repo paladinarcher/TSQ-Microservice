@@ -64,8 +64,8 @@ router.get('/findOne/id/:id', (request, response, next) => {
 		if (error) {
 			return errorResponseJson(response, error)
 		} else {
-			let payload = { payload: data }
-			return successResponseJson(response, 'Query Successful', payload)
+			let payload = { payload: data2 };
+			return successResponseJson(response, 'Query Successful', payload);
 		}
 	})
 })
@@ -75,8 +75,8 @@ router.get('/findOne/key/:key', (request, response, next) => {
 		if (error) {
 			return errorResponseJson(response, error)
 		} else {
-			let payload = { payload: data }
-			return successResponseJson(response, 'Query Successful', payload)
+			let payload = { payload: data };
+			return successResponseJson(response, 'Query Successful', payload);
 		}
 	})
 })
