@@ -53,7 +53,6 @@ module.exports.getUserDataById = function (id, callback) {
 module.exports.getUserDataByKey = function (key, callback) {
 	let query = {key: key}
 	SkillUserData.findOne(query).populate('skills.name').exec(callback);
-	});
 }
 
 module.exports.getUserSkillByKey = function (key, skill, callback) {
@@ -62,7 +61,7 @@ module.exports.getUserSkillByKey = function (key, skill, callback) {
 	// let skillFindQuery = { $elemMatch: { name: { $eq: skill } }}
 	let query = {
 		key: key,
-		"skills.name" : skill
+		"skills.name" : mongoose.Types.ObjectId(skill)
 	}
 	SkillUserData.find(query, callback)
 }
