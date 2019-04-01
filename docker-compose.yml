@@ -24,6 +24,8 @@ services:
         restart: always
         volumes:
             - "db-data:/data/db"
+        ports:
+            - "27018:27017"
         networks:
             tsqnetwork:
                 aliases:
