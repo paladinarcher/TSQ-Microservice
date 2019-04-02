@@ -24,7 +24,7 @@ const successResponseJson = (response, message, payload) => {
 // POST
 router.post('/', (req, res, next) => {
 	let skill = new SkillData({
-		name: req.body.name.toUpperCase().trim(),
+		name: req.body.name.trim(),
 		tags: req.body.tags,
 		keys: req.body.keys,
 	})
