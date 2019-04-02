@@ -57,8 +57,6 @@ module.exports.getUserDataByKey = function (key, callback) {
 
 module.exports.getUserSkillByKey = function (key, skill, callback) {
 	console.log(skill)
-	// let skillFindQuery = { $elemMatch: { skills: { name: skill }}}
-	// let skillFindQuery = { $elemMatch: { name: { $eq: skill } }}
 	let query = {
 		key: key,
 		"skills.name" : mongoose.Types.ObjectId(skill)

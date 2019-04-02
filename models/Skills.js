@@ -13,11 +13,6 @@ const schema = mongoose.Schema({
 		default: [],
 		required: true,
 	},
-	// registeredKeys: {
-	// 	type: [ String ],
-	// 	default: [],
-	// 	required: true,
-	// }
 })
 
 const SkillData = module.exports = mongoose.model('Skills', schema)
