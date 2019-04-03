@@ -131,6 +131,17 @@ router.put('/updateFamiliarity/key/:key', (request, response, next) => {
 	})
 })
 
+router.put('/updateConfidenceInfo/key/:key', (request, response, next) => {
+	SkillUserData.updateFamiliarityByKey(request.params.key, request.body.name, request.body.confidenceLevel, (error, result) => {
+		if (error) {
+			return errorResponseJson(response, error)
+		} else {
+			let payload = { payload: result }
+			return successResponseJson(response, 'Update Complete', payload)
+		}
+	})
+})
+
 
 // DELETE
 router.delete('/remove/id/:id', (request, response, next) => {

@@ -112,3 +112,15 @@ module.exports.updateFamiliarityByKey = function (key, skill, familiar, callback
 		]},
 		callback)
 }
+
+
+module.exports.updateFamiliarityByKey = function (key, skill, confidenceLevel, callback) {
+	console.log(skill)
+	const query = { key: key }
+	SkillUserData.updateOne(query,
+		{ $set: { 'skills.$[skillObject].confidenceLevel': confidenceLevel } },
+		{ arrayFilters: [
+			{ 'skillObject.name': { $eq: skill } }
+		]},
+		callback)
+}
