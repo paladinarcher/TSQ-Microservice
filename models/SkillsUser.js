@@ -64,20 +64,26 @@ module.exports.getUserSkillByKey = function (key, skill, callback) {
 	SkillUserData.find(query, callback)
 }
 
-module.exports.addSkillsByKey = function (key, data, callback) {
+module.exports.addSkillsByKey = async function  (key, data, callback) {
 	let query = { key: key }
-	console.log("addSkillsByKey", key, data);
-	SkillData.findOne( {_id: data[0].id}, (err, dat) => {
-		console.log("findOne",err,dat);
-		if (null !== dat) {
-			data[0].name = dat._id;
-			let updateQuery = { $addToSet: { skills: data }}
-			SkillUserData.update(query, updateQuery, callback);
-		} else {
-			callback(null, null);
+	let buildMassUpdateData = {
+		skills: []
+	};
+	for (let i =0; i < data.length; i++) {
+		let result = await SkillData.findOne({ _id: data[i].id })
+		if (result !== null) {
+			let modifiedResult = result.toObject();
+			modifiedResult.name = result._id;
+			if (data[i].familiar) {
+				modifiedResult.familiar = data[i].familiar;
+			}
+			buildMassUpdateData.skills.push(modifiedResult)
 		}
-	} );
+	}
+	let updateQuery = { $addToSet: { skills: buildMassUpdateData.skills }}
+	SkillUserData.update(query, updateQuery, callback);
 }
+
 
 module.exports.removeSkillsByKey = function (key, data, callback) {
 	let query = {key: key}
@@ -101,7 +107,7 @@ module.exports.updateFamiliarityByKey = function (key, skill, familiar, callback
 	SkillUserData.updateOne(query,
 		{ $set: { 'skills.$[skillObject].familiar': familiar } },
 		{ arrayFilters: [
-			{ 'skillObject.name': { $eq: skill } }
+			{ 'skillObject.name.name': { $eq: skill.name } }
 		]},
 		callback)
 }
