@@ -21,19 +21,19 @@ const testData = {
   userEntryWithSkills: {
     _id: '5c70404993c5e936388577dd',
     key: 'thisIsth3K3y',
-    skills: [
-      { name: 'python', familiarityScore: 3 },
-      { name: 'java', familiarityScore: 5 },
-      { name: 'gardening', familiarityScore: 5 }
-    ]
+    skills: []
   },
   skillsToRemove: {
     skills: [{ name: 'gardening' }]
   },
   skillsToAdd: {
     skills: [
-      { name: '5c70404993c5e936388577dd', familiar: true },
-      { name: '5c70404993c5e936388577d1' }
+      {
+        id: '5c70404993c5e936388577dd',
+        name: 'basic-test-skill',
+        familiar: true
+      },
+      { id: '5c70404993c5e936388577d1', name: 'test-skill-with-tags' }
     ]
   },
   skillData: {
@@ -44,20 +44,20 @@ const testData = {
     testSkill2: {
       _id: '5c70404993c5e936388577d1',
       name: 'test-skill-with-tags',
-      tags: ['tag-1', 'tag-2', 'tag-3']
+      tags: []
     }
   }
 };
 
-function addAUserSkillEntry(userSkillEntryObject) {
+async function addAUserSkillEntry(userSkillEntryObject) {
   userSkillEntryObject = new SkillUserData(userSkillEntryObject);
-  userSkillEntryObject.save();
+  await userSkillEntryObject.save();
   return;
 }
 
-function addSkillData(skill) {
+async function addSkillData(skill) {
   skill = new SkillData(skill);
-  skill.save();
+  await skill.save();
   return;
 }
 
@@ -159,28 +159,27 @@ describe('SkillsUser API Tests', () => {
   });
 
   describe('/UPDATE /skills/users/addSkills/', () => {
-    it('it adds skills by name to a userskills entry', async done => {
-      await addAUserSkillEntry(testData.userEntry);
-      await addSkillData(testData.skillData.testSkill1);
-      await addSkillData(testData.skillData.testSkill2);
+    it('it adds skills by name to a userskills entry', done => {
+      const { skillsToAdd, userEntry } = testData;
+      const { testSkill1, testSkill2 } = testData.skillData;
+      const { key } = testData.userEntry;
 
+      addAUserSkillEntry(userEntry);
+      addSkillData(testSkill1);
+      addSkillData(testSkill2);
 
       chai
         .request(server)
-        .put(skillUserURL + '/addSkills/key/' + testData.userEntry.key)
-        .send(testData.skillsToAdd)
+        .put(skillUserURL + '/addSkills/key/' + key)
+        .send(skillsToAdd)
         .end((error, response) => {
-            should.exist(response.body)
           should.exist(response.body);
-          response.should.have.status(200);
           response.body.should.be.a('object');
           response.body.should.have.property('success').eql(true);
-          response.body.should.have.property('message').eql('Update Complete');
           chai.assert(
             response.body.data.payload.nModified == 1,
             'The entry did not update'
           );
-          // TODO: fix this test to work better
           done();
         });
     });
