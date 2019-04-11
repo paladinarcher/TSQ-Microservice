@@ -21,10 +21,23 @@ const testData = {
   userEntryWithSkills: {
     _id: '5c70404993c5e936388577dd',
     key: 'thisIsth3K3y',
-    skills: []
+    skills: [
+      {
+        familiar: true,
+        confidenceLevel: 0,
+        _id: '5ca3918cb85bad4f0f999aae',
+        name: '5c70404993c5e936388577dd'
+      },
+      {
+        familiar: true,
+        confidenceLevel: 0,
+        _id: '5ca3918db85bad4f0f999ab1',
+        name: '5c70404993c5e936388577d1'
+      }
+    ]
   },
   skillsToRemove: {
-    skills: [{ name: 'gardening' }]
+    skills: [{ name: '5c70404993c5e936388577d1' }]
   },
   skillsToAdd: {
     skills: [
@@ -187,15 +200,18 @@ describe('SkillsUser API Tests', () => {
 
   describe('/UPDATE /skills/users/removeSkills/', () => {
     it('it removes skills by skillname to a userskills entry', done => {
-      // prepare the data
-      addAUserSkillEntry(testData.userEntryWithSkills);
-      // make request on the server
+      const { skillsToRemove, userEntryWithSkills } = testData;
+      const { testSkill1, testSkill2 } = testData.skillData;
+      const { key } = testData.userEntry;
+
+      addAUserSkillEntry(userEntryWithSkills);
+      addSkillData(testSkill1);
+      addSkillData(testSkill2);
+
       chai
         .request(server)
-        .put(
-          skillUserURL + '/removeSkills/key/' + testData.userEntryWithSkills.key
-        )
-        .send(testData.skillsToRemove)
+        .put(skillUserURL + '/removeSkills/key/' + key)
+        .send(skillsToRemove)
         .end((error, response) => {
           should.exist(response.body);
           response.should.have.status(200);
