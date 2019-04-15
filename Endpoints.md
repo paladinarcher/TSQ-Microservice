@@ -110,13 +110,18 @@ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X DEL
 **Example**
 
 ```bash
-curl -d '{"skills": [{"name": "python"}, {"name": "java", "familiarityScore": 3}]}' -H "Content-Type: application/json" -X POST http://localhost:4000/tsq/skills/users/register
+# register with no skill data included
+curl -H "Content-Type: application/json" POST http://localhost:4000/tsq/skills/users/register
+
+# register with skill data included
+curl -d '{ "skills": [ {"name": "5cb4c51338156e0017fbbbfe", "familiar":true, "confidenceLevel": 3} ]}' -H "Content-Type: application/json" -X POST http://localhost:4000/tsq/skills/users/register
+
 ```
 
 **Fields**
 
-`skills`: skills is an array of skill objects for the entry.
-These contain a `name` (string, required) and `familiarityScore` (number, optional, defaults to 0)
+`skills`: skills is an array of skills to attach to the user
+These contain a `name` (skill ObjectId, required) and `confidenceLevel` (number, optional, defaults to `0`), `familiar` (boolean, defaults to `false`)
 
 ### GET
 
