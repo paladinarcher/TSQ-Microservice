@@ -1,32 +1,34 @@
 version: '3'
 services:
-    node:
-        build: .
-        user: node
-        depends_on:
-            - database
-        working_dir: /usr/src/app
-        environment:
-            - NODE_ENV=production
-        ports:
-            - "4100:4000"
-        extra_hosts:
-            - "serverhost:172.17.0.1"
-        command: [ "npm", "start" ]
-        networks:
-            tsqnetwork:
-                aliases:
-                    - tsqapp
-    database:
-        image: "mongo:3.6"
-        restart: always
-        volumes:
-            - "db-data:/data/db"
-        networks:
-            tsqnetwork:
-                aliases:
-                    - tsqdb
+  node:
+    build: .
+    user: node
+    depends_on:
+      - database
+    working_dir: /usr/src/app
+    environment:
+      - NODE_ENV=production
+    ports:
+      - '4100:4000'
+    extra_hosts:
+      - 'serverhost:172.17.0.1'
+    command: ['npm', 'start']
+    networks:
+      proxy-net:
+        aliases:
+          - tsqapp
+  database:
+    image: 'mongo:3.6'
+    restart: always
+    volumes:
+      - 'db-data:/data/db'
+    networks:
+      proxy-net:
+        aliases:
+          - tsqdb
 volumes:
-    db-data:
+  db-data:
 networks:
-    tsqnetwork:
+  proxy-net:
+    external:
+      name: devlvl_net
