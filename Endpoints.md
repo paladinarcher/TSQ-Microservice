@@ -110,13 +110,18 @@ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X DEL
 **Example**
 
 ```bash
-curl -d '{"skills": [{"name": "python"}, {"name": "java", "familiarityScore": 3}]}' -H "Content-Type: application/json" -X POST http://localhost:4000/tsq/skills/users/register
+# register with no skill data included
+curl -H "Content-Type: application/json" POST http://localhost:4000/tsq/skills/users/register
+
+# register with skill data included
+curl -d '{ "skills": [ {"name": "5cb4c51338156e0017fbbbfe", "familiar":true, "confidenceLevel": 3} ]}' -H "Content-Type: application/json" -X POST http://localhost:4000/tsq/skills/users/register
+
 ```
 
 **Fields**
 
-`skills`: skills is an array of skill objects for the entry.
-These contain a `name` (string, required) and `familiarityScore` (number, optional, defaults to 0)
+`skills`: skills is an array of skills to attach to the user
+These contain a `name` (skill ObjectId, required) and `confidenceLevel` (number, optional, defaults to `0`), `familiar` (boolean, defaults to `false`)
 
 ### GET
 
@@ -146,15 +151,26 @@ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET
 ```javascript
 /addSkills/key/<key>			// add skills to a user entry
 /removeSkills/key/<key>		// remove skills from a user entry
+/updateFamiliarity/key/<key> // updates users familiar setting for a skill (true/false)
+/updateConfidenceInfo/key/<key> // updates users confidence info for a skill
+
 ```
 
 **Examples**
 
 ```bash
 # add skills by key
-curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "MEAN", "familiarityScore": 4}]}'  -X PUT http://localhost:4000/tsq/skills/users/addSkills/key/d60c6X62iC2Qu1P7
+curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "<skill ObjectID>"}]}'  -X PUT http://localhost:4000/tsq/skills/users/addSkills/key/<key>
+
 # remove skills by key
-curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "MEAN"}]}'  -X PUT http://localhost:4000/tsq/skills/users/removeSkills/key/d60c6X62iC2Qu1P7
+curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "<skill ObjectID>"}]}'  -X PUT http://localhost:4000/tsq/skills/users/removeSkills/key/d60c6X62iC2Qu1P7
+
+# update familiar
+curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "<skill ObjectID>", "familiar": true}]}'  -X PUT http://localhost:4000/tsq/skills/users/updateFamiliarity/key/<key>
+
+# update confidence info
+curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "<skill ObjectID>", "confidenceLevel": 3 }]}'  -X PUT http://localhost:4000/tsq/skills/users/updateConfidenceInfo/key/<key>
+
 ```
 
 ### DELETE
