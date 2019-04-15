@@ -157,9 +157,10 @@ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET
 
 ```bash
 # add skills by key
-curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "MEAN", "familiarityScore": 4}]}'  -X PUT http://localhost:4000/tsq/skills/users/addSkills/key/d60c6X62iC2Qu1P7
+curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "<skill ObjectID>"}]}'  -X PUT http://localhost:4000/tsq/skills/users/addSkills/key/<key>
+
 # remove skills by key
-curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "MEAN"}]}'  -X PUT http://localhost:4000/tsq/skills/users/removeSkills/key/d60c6X62iC2Qu1P7
+curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "<skill ObjectID>"}]}'  -X PUT http://localhost:4000/tsq/skills/users/removeSkills/key/d60c6X62iC2Qu1P7
 ```
 
 ### DELETE
