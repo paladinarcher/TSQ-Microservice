@@ -14,12 +14,12 @@ const skillUserURL = '/tsq/skills/users';
 
 const testData = {
   userEntry: {
-    _id: '5c70404993c5e936388577dd',
+    _id: '5c70404993c5e936388579dd',
     key: 'thisIsth3K3y',
     skills: []
   },
   userEntryWithSkills: {
-    _id: '5c70404993c5e936388577dd',
+    _id: '5c70404993c5e936388578dd',
     key: 'thisIsth3K3y',
     skills: [
       {
