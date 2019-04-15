@@ -151,6 +151,8 @@ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET
 ```javascript
 /addSkills/key/<key>			// add skills to a user entry
 /removeSkills/key/<key>		// remove skills from a user entry
+/updateFamiliarity/key/<key> // update familiar setting for the user (true/false)
+
 ```
 
 **Examples**
@@ -161,6 +163,10 @@ curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "<skill Objec
 
 # remove skills by key
 curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "<skill ObjectID>"}]}'  -X PUT http://localhost:4000/tsq/skills/users/removeSkills/key/d60c6X62iC2Qu1P7
+
+# update familiar
+curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "<skill ObjectID>", "familiar": true}]}'  -X PUT http://localhost:4000/tsq/skills/users/updateFamiliarity/key/<key>
+
 ```
 
 ### DELETE
