@@ -208,6 +208,11 @@ describe('SkillsUser API Tests', () => {
       addSkillData(testSkill1);
       addSkillData(testSkill2);
 
+      console.log('testSkill1', testSkill1);
+      console.log('testSkill2', testSkill2);
+      console.log('userEntryWithSkills', userEntryWithSkills);
+      console.log('key', key);
+
       chai
         .request(server)
         .put(skillUserURL + '/removeSkills/key/' + key)
@@ -217,6 +222,8 @@ describe('SkillsUser API Tests', () => {
           response.should.have.status(200);
           response.body.should.be.a('object');
           response.body.should.have.property('success').eql(true);
+          console.log(response.body);
+          console.log(response.body.data.payload.nModified);
           chai.assert(
             response.body.data.payload.nModified == 1,
             'The entry did not update'
