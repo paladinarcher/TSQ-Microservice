@@ -107,6 +107,17 @@ router.get('/findSkill/key/:key', (request, response, next) => {
   );
 });
 
+router.get('/getDuplicateSkills/key/:key', (request, response, next) => {
+  SkillUserData.getDuplicateSkills(request.params.key, (error, result) => {
+    if (error) {
+      return errorResponseJson(response, error);
+    } else {
+      let payload = { payload: { entries: result.length, result: result } };
+      return successResponseJson(response, 'Query Sucessful', payload);
+    }
+  })
+})
+
 // PUT
 router.put('/addSkills/key/:key', (request, response, next) => {
   let data = request.body.skills.filter(obj => obj.hasOwnProperty('name'));

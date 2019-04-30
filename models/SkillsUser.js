@@ -38,27 +38,27 @@ const SkillUserData = (module.exports = mongoose.model(
   'Keys',
   SkillsUserSchema
 ));
-module.exports.registerUserData = function(userData, callback) {
+module.exports.registerUserData = function (userData, callback) {
   userData.save(callback);
 };
 
-module.exports.getAllUserData = function(callback) {
+module.exports.getAllUserData = function (callback) {
   SkillUserData.find({}, callback);
 };
 
-module.exports.getUserDataById = function(id, callback) {
+module.exports.getUserDataById = function (id, callback) {
   let query = { _id: id };
   SkillUserData.findOne(query, callback);
 };
 
-module.exports.getUserDataByKey = function(key, callback) {
+module.exports.getUserDataByKey = function (key, callback) {
   let query = { key: key };
   SkillUserData.findOne(query)
     .populate('skills.name')
     .exec(callback);
 };
 
-module.exports.getUserSkillByKey = function(key, skill, callback) {
+module.exports.getUserSkillByKey = function (key, skill, callback) {
   console.log(skill);
   let query = {
     key: key,
@@ -67,7 +67,24 @@ module.exports.getUserSkillByKey = function(key, skill, callback) {
   SkillUserData.find(query, callback);
 };
 
-module.exports.addSkillsByKey = async function(key, data, callback) {
+module.exports.getDuplicateSkills = function (key, callback) {
+  SkillUserData.aggregate([
+    // match a user key 
+    { $match: { key: key } },
+    // flatten skills array 
+    { $unwind: "$skills" },
+    // sort by name ascending 
+    { $sort: { "skills.name": 1 } },
+    // create new set of docs by skills, sort ascending and count duplicate docs
+    { $group: { _id: "$skills.name", count: { $sum: 1 } } },
+    // show by duplicates count descending order 
+    { $sort: { count: -1 } },
+    // match only items whose duplicate count is greater than 1.0
+    { $match: { count: { "$gt": 1 } } }
+  ], callback)
+}
+
+module.exports.addSkillsByKey = async function (key, data, callback) {
   let query = { key: key };
   let buildMassUpdateData = {
     skills: []
@@ -87,7 +104,7 @@ module.exports.addSkillsByKey = async function(key, data, callback) {
   SkillUserData.update(query, updateQuery, callback);
 };
 
-module.exports.removeSkillsByKey = function(key, data, callback) {
+module.exports.removeSkillsByKey = function (key, data, callback) {
   let query = { key: key };
   let skillNames = data.map(item => {
     return item.name;
@@ -96,17 +113,17 @@ module.exports.removeSkillsByKey = function(key, data, callback) {
   SkillUserData.update(query, updateQuery, { multi: true }, callback);
 };
 
-module.exports.removeSkillDataByKey = function(key, callback) {
+module.exports.removeSkillDataByKey = function (key, callback) {
   const query = { key: key };
   SkillUserData.deleteOne(query, callback);
 };
 
-module.exports.removeSkillDataById = function(id, callback) {
+module.exports.removeSkillDataById = function (id, callback) {
   const query = { _id: id };
   SkillUserData.deleteOne(query, callback);
 };
 
-module.exports.updateFamiliarityByKey = function(
+module.exports.updateFamiliarityByKey = function (
   key,
   skill,
   familiar,
@@ -122,7 +139,7 @@ module.exports.updateFamiliarityByKey = function(
   );
 };
 
-module.exports.updateFamiliarityByKey = function(
+module.exports.updateFamiliarityByKey = function (
   key,
   skill,
   confidenceLevel,
