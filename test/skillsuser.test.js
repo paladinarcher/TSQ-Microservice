@@ -36,6 +36,36 @@ const testData = {
       }
     ]
   },
+  userEntryWithDuplicateSkills: {
+    _id: '5c70404993c5e936388578dd',
+    key: 'thisIsth3K3y',
+    skills: [
+      {
+        familiar: true,
+        confidenceLevel: 0,
+        _id: '5ca3918cb85bad4f0f999aae',
+        name: '5c70404993c5e936388577dd'
+      },
+      {
+        familiar: true,
+        confidenceLevel: 0,
+        _id: '5ca3918cb85bad4f0f999aae',
+        name: '5c70404993c5e936388577dd'
+      },
+      {
+        familiar: true,
+        confidenceLevel: 0,
+        _id: '5ca3918db85bad4f0f999ab1',
+        name: '5c70404993c5e936388577d1'
+      },
+      {
+        familiar: true,
+        confidenceLevel: 0,
+        _id: '5ca3918db85bad4f0f999ab1',
+        name: '5c70404993c5e936388577d1'
+      }
+    ]
+  },
   skillsToRemove: {
     skills: [{ name: '5c70404993c5e936388577d1' }]
   },
@@ -77,11 +107,11 @@ async function addSkillData(skill) {
 chai.use(chaiHttp);
 
 describe('SkillsUser API Tests', () => {
-  before(function(done) {
+  before(function (done) {
     mongoose.connect(config.database);
     const db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error'));
-    db.once('open', function() {
+    db.once('open', function () {
       console.log('We are connected to test database!');
       done();
     });
@@ -101,7 +131,7 @@ describe('SkillsUser API Tests', () => {
         .send(testData.userEntry)
         .end((error, response) => {
           if (error) {
-            console.log(error);
+            throw new Error(error);
           }
           should.exist(response.body);
           response.should.have.status(200);
@@ -119,7 +149,7 @@ describe('SkillsUser API Tests', () => {
         .get(skillUserURL + '/findall')
         .end((error, response) => {
           if (error) {
-            console.log(error);
+            throw new Error(error)
           }
           should.exist(response.body);
           response.should.have.status(200);
@@ -139,7 +169,7 @@ describe('SkillsUser API Tests', () => {
         .get(skillUserURL + '/findOne/key/' + testData.userEntry.key)
         .end((error, response) => {
           if (error) {
-            console.log(error);
+            throw new Error(error);
           }
           should.exist(response.body);
           response.should.have.status(200);
@@ -170,6 +200,30 @@ describe('SkillsUser API Tests', () => {
         });
     });
   });
+
+  describe('/GET /skills/users/getDuplicateSkills/key/', () => {
+    it('it queries a userkey for duplicate skill entries', done => {
+      const { skillsToAdd, userEntryWithDuplicateSkills } = testData;
+      const { testSkill1, testSkill2 } = testData.skillData;
+      const { key } = testData.userEntryWithDuplicateSkills;
+
+      addAUserSkillEntry(userEntryWithDuplicateSkills);
+      addSkillData(testSkill1);
+      addSkillData(testSkill2);
+
+      chai
+        .request(server)
+        .get(skillUserURL + '/getDuplicateSkills/key/' + key)
+        .end((error, response) => {
+          should.exist(response.body);
+          response.body.should.be.a('object');
+          response.body.should.have.property('success').eql(true);
+          chai.assert(response.body.data.payload.entries === 2, 'it did not find all duplicates for this user')
+          done();
+        })
+    })
+  })
+
 
   describe('/UPDATE /skills/users/addSkills/', () => {
     it('it adds skills by name to a userskills entry', done => {
@@ -208,11 +262,6 @@ describe('SkillsUser API Tests', () => {
       addSkillData(testSkill1);
       addSkillData(testSkill2);
 
-      console.log('testSkill1', testSkill1);
-      console.log('testSkill2', testSkill2);
-      console.log('userEntryWithSkills', userEntryWithSkills);
-      console.log('key', key);
-
       chai
         .request(server)
         .put(skillUserURL + '/removeSkills/key/' + key)
@@ -222,8 +271,6 @@ describe('SkillsUser API Tests', () => {
           response.should.have.status(200);
           response.body.should.be.a('object');
           response.body.should.have.property('success').eql(true);
-          console.log(response.body);
-          console.log(response.body.data.payload.nModified);
           chai.assert(
             response.body.data.payload.nModified == 1,
             'The entry did not update'
@@ -241,7 +288,7 @@ describe('SkillsUser API Tests', () => {
         .request(server)
         .delete(skillUserURL + '/remove/id/' + testData.userEntry._id)
         .end((error, response) => {
-          if (error) console.log(error);
+          if (error) throw new Error(error);
           should.exist(response.body);
           response.should.have.status(200);
           response.body.should.be.a('object');
@@ -261,7 +308,7 @@ describe('SkillsUser API Tests', () => {
         .request(server)
         .delete(skillUserURL + '/remove/key/' + testData.userEntry.key)
         .end((error, response) => {
-          if (error) console.log(error);
+          if (error) throw new Error(error);
           should.exist(response.body);
           response.should.have.status(200);
           response.body.should.be.a('object');
