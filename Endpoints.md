@@ -128,9 +128,10 @@ These contain a `name` (skill ObjectId, required) and `confidenceLevel` (number,
 **Routes**
 
 ```javascript
-/findAll  					// finds all the entries
-/findOne/key/<key> 	// finds one entry by entry key field
-/findOne/id/<id>  	// finds one entry by entry _id field
+/findAll  					           // finds all the entries
+/findOne/key/<key> 	           // finds one entry by entry key field
+/findOne/id/<id>  	           // finds one entry by entry _id field
+/getDuplicateSkills/key/<key>  // gets duplicate skill entries for user by key, returns skill entry id and count
 ```
 
 **Examples**
@@ -142,6 +143,8 @@ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET
 curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://localhost:4000/tsq/skills/users/findOne/key/<key>
 # findOne by Id
 curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://localhost:4000/tsq/skills/users/findOne/id/<id>
+# get Duplicate Skills by Key
+curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://localhost:4000/tsq/skills/users/getDuplicateSkills/key/<key>
 ```
 
 ### PUT
