@@ -152,11 +152,11 @@ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET
 **Routes**
 
 ```javascript
-/addSkills/key/<key>			// add skills to a user entry
-/removeSkills/key/<key>		// remove skills from a user entry
-/updateFamiliarity/key/<key> // updates users familiar setting for a skill (true/false)
-/updateConfidenceInfo/key/<key> // updates users confidence info for a skill
-
+/addSkills/key/<key>			         // add skills to a user entry
+/removeSkills/key/<key>		         // remove skills from a user entry
+/updateFamiliarity/key/<key>       // updates users familiar setting for a skill (true/false)
+/updateConfidenceInfo/key/<key>    // updates users confidence info for a skill
+/removeDuplicateSkills/key/<key>   // removes duplicate skill entries for user by key
 ```
 
 **Examples**
@@ -173,6 +173,9 @@ curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "<skill Objec
 
 # update confidence info
 curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "<skill ObjectID>", "confidenceLevel": 3 }]}'  -X PUT http://localhost:4000/tsq/skills/users/updateConfidenceInfo/key/<key>
+
+# remove Duplicate Skills by Key
+curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://localhost:4000/tsq/skills/users/removeDuplicateSkills/key/<key>
 
 ```
 
