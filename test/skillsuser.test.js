@@ -203,7 +203,7 @@ describe('SkillsUser API Tests', () => {
 
   describe('/GET /skills/users/getDuplicateSkills/key/', () => {
     it('it queries a userkey for duplicate skill entries', done => {
-      const { skillsToAdd, userEntryWithDuplicateSkills } = testData;
+      const { userEntryWithDuplicateSkills } = testData;
       const { testSkill1, testSkill2 } = testData.skillData;
       const { key } = testData.userEntryWithDuplicateSkills;
 
@@ -280,6 +280,35 @@ describe('SkillsUser API Tests', () => {
         });
     });
   });
+
+  describe('/UPDATE /skills/users/removeDuplicateSkills', () => {
+    it('it removes skill entries from a user that are duplicated', done => {
+      const { userEntryWithDuplicateSkills } = testData;
+      const { testSkill1, testSkill2 } = testData.skillData;
+      const { key } = testData.userEntryWithDuplicateSkills;
+
+      addAUserSkillEntry(userEntryWithDuplicateSkills);
+      addSkillData(testSkill1);
+      addSkillData(testSkill2);
+
+      chai
+        .request(server)
+        .put(skillUserURL + '/removeDuplicateSkills/key/' + key)
+        .end((error, response) => {
+          if (error) throw new Error(error)
+          should.exist(response.body)
+          response.should.have.status(200)
+          response.body.should.be.a('object')
+          response.body.should.have.property('success').eql(true)
+          SkillUserData.getDuplicateSkills(key, (error, result) => {
+            if (error) throw new Error(error)
+            chai.assert(result.length === 0, 'there are still duplicates')
+          })
+          done();
+        })
+
+    })
+  })
 
   describe('/DELETE /skills/users/remove', () => {
     it('it removes user skill entries by id', done => {
