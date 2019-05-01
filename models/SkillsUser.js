@@ -69,18 +69,20 @@ module.exports.getUserSkillByKey = function (key, skill, callback) {
 
 module.exports.getDuplicateSkills = function (key, callback) {
   SkillUserData.aggregate([
-    // match a user key 
     { $match: { key: key } },
-    // flatten skills array 
     { $unwind: "$skills" },
-    // sort by name ascending 
     { $sort: { "skills.name": 1 } },
-    // create new set of docs by skills, sort ascending and count duplicate docs
     { $group: { _id: "$skills.name", count: { $sum: 1 } } },
-    // show by duplicates count descending order 
     { $sort: { count: -1 } },
-    // match only items whose duplicate count is greater than 1.0
     { $match: { count: { "$gt": 1 } } }
+  ], callback)
+}
+
+module.exports.checkForDuplicateSkills = function (key, objectId, callback) {
+  SkillUserData.aggregate([
+    { $match: { key: key } },
+    { $unwind: "$skills" },
+    { $match: { "skills.name": objectId } },
   ], callback)
 }
 
