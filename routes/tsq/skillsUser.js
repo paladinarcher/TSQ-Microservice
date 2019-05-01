@@ -178,6 +178,24 @@ router.put('/updateConfidenceInfo/key/:key', (request, response, next) => {
   );
 });
 
+router.put('/removeDuplicateSkills/key/:key', (request, response, next) => {
+  SkillUserData.getDuplicateSkills(request.params.key, (error, result) => {
+    let skills = result.map(duplicate => { return { name: duplicate._id } })
+    SkillUserData.removeSkillsByKey(
+      request.params.key,
+      skills,
+      (error, result) => {
+        if (error) {
+          return errorResponseJson(response, error);
+        } else {
+          let payload = { payload: result };
+          return successResponseJson(response, 'Update Complete', payload);
+        }
+      }
+    );
+  })
+})
+
 // DELETE
 router.delete('/remove/id/:id', (request, response, next) => {
   SkillUserData.removeSkillDataById(request.params.id, (error, result) => {
