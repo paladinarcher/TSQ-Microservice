@@ -119,14 +119,21 @@ router.get('/getDuplicateSkills/key/:key', (request, response, next) => {
 })
 
 // PUT
-router.put('/addSkills/key/:key', (request, response, next) => {
-  let data = request.body.skills.filter(obj => obj.hasOwnProperty('name'));
-  SkillUserData.addSkillsByKey(request.params.key, data, (error, result) => {
-    if (error) {
-      return errorResponseJson(response, error);
-    } else {
-      let payload = { payload: result };
-      return successResponseJson(response, 'Update Complete', payload);
+router.put('/addSkills/key/:key', async (request, response, next) => {
+  let skills = request.body.skills.filter(obj => obj.hasOwnProperty('name'));
+  skills = [...new Set(skills)];
+  SkillUserData.getUserDataByKey(request.params.key, (error, data) => {
+    if (data !== null) {
+      let updatedSkills = data.skills.concat(skills)
+      updatedSkills = [...new Set(updatedSkills)]
+      SkillUserData.addSkillsByKey(request.params.key, updatedSkills, (error, result) => {
+        if (error) {
+          return errorResponseJson(response, error);
+        } else {
+          let payload = { payload: result };
+          return successResponseJson(response, 'Update Complete', payload);
+        }
+      })
     }
   });
 });

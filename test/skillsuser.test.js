@@ -115,6 +115,10 @@ describe('SkillsUser API Tests', () => {
       console.log('We are connected to test database!');
       done();
     });
+
+    addSkillData(testData.skillData.testSkill1);
+    addSkillData(testData.skillData.testSkill2);
+
   });
 
   beforeEach(done => {
@@ -122,6 +126,7 @@ describe('SkillsUser API Tests', () => {
       done();
     });
   });
+
 
   describe('/POST /skills/users/register', () => {
     it('it creates a user skills entry', done => {
@@ -208,8 +213,6 @@ describe('SkillsUser API Tests', () => {
       const { key } = testData.userEntryWithDuplicateSkills;
 
       addAUserSkillEntry(userEntryWithDuplicateSkills);
-      addSkillData(testSkill1);
-      addSkillData(testSkill2);
 
       chai
         .request(server)
@@ -231,9 +234,15 @@ describe('SkillsUser API Tests', () => {
       const { testSkill1, testSkill2 } = testData.skillData;
       const { key } = testData.userEntry;
 
+      function skillAssertions(skill, skillId) {
+        skill.should.be.a('object');
+        skill.should.have.property('name')
+        skill.name.should.be.a('object')
+        skill._id.toString().should.eql(skillId)
+        return
+      }
+
       addAUserSkillEntry(userEntry);
-      addSkillData(testSkill1);
-      addSkillData(testSkill2);
 
       chai
         .request(server)
@@ -247,6 +256,20 @@ describe('SkillsUser API Tests', () => {
             response.body.data.payload.nModified == 1,
             'The entry did not update'
           );
+
+          SkillUserData.getUserDataByKey(key, (error, updatedUserData) => {
+            if (error) console.log({ error })
+
+            updatedUserData.should.be.a('object');
+            updatedUserData.should.have.property('key').eql(key)
+            updatedUserData.should.have.property('skills')
+            updatedUserData.skills.length.should.eql(2);
+
+            skillAssertions(updatedUserData.skills[0], '5c70404993c5e936388577dd')
+            skillAssertions(updatedUserData.skills[1], '5c70404993c5e936388577d1')
+
+          })
+
           done();
         });
     });
@@ -259,8 +282,6 @@ describe('SkillsUser API Tests', () => {
       const { key } = testData.userEntry;
 
       addAUserSkillEntry(userEntryWithSkills);
-      addSkillData(testSkill1);
-      addSkillData(testSkill2);
 
       chai
         .request(server)
@@ -288,8 +309,6 @@ describe('SkillsUser API Tests', () => {
       const { key } = testData.userEntryWithDuplicateSkills;
 
       addAUserSkillEntry(userEntryWithDuplicateSkills);
-      addSkillData(testSkill1);
-      addSkillData(testSkill2);
 
       chai
         .request(server)
