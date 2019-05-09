@@ -141,7 +141,7 @@ module.exports.updateFamiliarityByKey = function (
   );
 };
 
-module.exports.updateFamiliarityByKey = function (
+module.exports.updateConfidenceLevelByKey = function (
   key,
   skill,
   confidenceLevel,

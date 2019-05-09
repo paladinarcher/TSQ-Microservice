@@ -153,7 +153,7 @@ router.put('/removeSkills/key/:key', (request, response, next) => {
   );
 });
 
-router.put('/updateFamiliarity/key/:key', (request, response, next) => {
+router.put('/updateFamiliar/key/:key', (request, response, next) => {
   SkillUserData.updateFamiliarityByKey(
     request.params.key,
     request.body.name,
@@ -170,7 +170,7 @@ router.put('/updateFamiliarity/key/:key', (request, response, next) => {
 });
 
 router.put('/updateConfidenceInfo/key/:key', (request, response, next) => {
-  SkillUserData.updateFamiliarityByKey(
+  SkillUserData.updateConfidenceLevelByKey(
     request.params.key,
     request.body.name,
     request.body.confidenceLevel,
