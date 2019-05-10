@@ -162,8 +162,8 @@ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET
 **Examples**
 
 ```bash
-# add skills by key
-curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "<skill ObjectID>"}]}'  -X PUT http://localhost:4000/tsq/skills/users/addSkills/key/<key>
+# add skills by key example.  Needs an id, and name value in each object in the skills array.  optionally, a familiar value can be added 
+curl -X PUT -H "Content-Type: application/json" -d '{"skills":[{"id": "5cb6640253143f001088b060", "name": "JavaScript"}]}' http://localhost:4000/tsq/skills/users/addSkills/key/mq1dKEvioUB0Axiv
 
 # remove skills by key
 curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "<skill ObjectID>"}]}'  -X PUT http://localhost:4000/tsq/skills/users/removeSkills/key/d60c6X62iC2Qu1P7
