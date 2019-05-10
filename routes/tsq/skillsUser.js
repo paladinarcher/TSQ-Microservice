@@ -153,7 +153,7 @@ router.put('/removeSkills/key/:key', (request, response, next) => {
   );
 });
 
-router.put('/updateFamiliar/key/:key', (request, response, next) => {
+router.put('/updateFamiliarity/key/:key', (request, response, next) => {
   SkillUserData.updateFamiliarityByKey(
     request.params.key,
     request.body.name,
