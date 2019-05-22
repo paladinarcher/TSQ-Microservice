@@ -19,6 +19,12 @@ const successResponseJson = (response, message, payload) => {
   });
 };
 
+function removeDuplicates(myArr, prop) {
+  return myArr.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
+  });
+}
+
 // POST
 router.post('/register', (request, response, next) => {
   let userData = new SkillUserData();
@@ -120,12 +126,12 @@ router.get('/getDuplicateSkills/key/:key', (request, response, next) => {
 
 // PUT
 router.put('/addSkills/key/:key', async (request, response, next) => {
-  let skills = request.body.skills.filter(obj => obj.hasOwnProperty('name'));
-  skills = [...new Set(skills)];
+  let skills = request.body.skills.filter(obj => obj.hasOwnProperty('id'));
+  skills = removeDuplicates(skills, 'id');
   SkillUserData.getUserDataByKey(request.params.key, (error, data) => {
     if (data !== null) {
       let updatedSkills = data.skills.concat(skills)
-      updatedSkills = [...new Set(updatedSkills)]
+      updatedSkills = removeDuplicates(updatedSkills, 'id');
       SkillUserData.addSkillsByKey(request.params.key, updatedSkills, (error, result) => {
         if (error) {
           return errorResponseJson(response, error);
