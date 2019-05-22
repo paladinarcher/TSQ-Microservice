@@ -127,11 +127,11 @@ router.get('/getDuplicateSkills/key/:key', (request, response, next) => {
 // PUT
 router.put('/addSkills/key/:key', async (request, response, next) => {
   let skills = request.body.skills.filter(obj => obj.hasOwnProperty('id'));
-  skills = removeDuplicates(skills, 'id');
+  skills = removeDuplicates(skills, 'name');
   SkillUserData.getUserDataByKey(request.params.key, (error, data) => {
     if (data !== null) {
       let updatedSkills = data.skills.concat(skills)
-      updatedSkills = removeDuplicates(updatedSkills, 'id');
+      updatedSkills = removeDuplicates(updatedSkills, 'name');
       SkillUserData.addSkillsByKey(request.params.key, updatedSkills, (error, result) => {
         if (error) {
           return errorResponseJson(response, error);
