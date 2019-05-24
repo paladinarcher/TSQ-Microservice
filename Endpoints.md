@@ -19,18 +19,23 @@
 **Example**
 
 ```bash
-curl -d '{"name":"django", "tags": ["python", "framework"]}' -H "Content-Type: application/json" -X POST http://localhost:4000/tsq/skills/
+curl -d '{"name":"test-skill-1", "tags": ["python", "framework"]}' -H "Content-Type: application/json" -X POST http://localhost:4000/tsq/skills/
 ```
 
-**Additional Notes**
+**Headers**
 
-- Use Content-Type of application json
-- Required Fields: `name`
-- Optional Fields: `tags`, `keys`
+|     Headers    |        Value        |
+|:--------------:|:-------------------:| 
+|  Content-Type  |  application-json   |
 
-`name`: string, the name of the skill entry
-`tags`: array of strings, the other tags/skills associated with this skill entry
-`keys`: user keys that this skill are registered to (this functionality isn't implemented yet)
+
+**Fields**
+
+| Fields | Required | Description | 
+|:------:|:--------:|:-----------:|
+| `name` |   true   | string, the name of the skill entry | 
+| `tags` |   false   | array of strings, the other tags/skills associated with this skill entry | 
+
 
 ### GET
 
@@ -43,14 +48,15 @@ curl -d '{"name":"django", "tags": ["python", "framework"]}' -H "Content-Type: a
 **Example**
 
 ```bash
-curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://localhost:4000/tsq/skills/?id=5c7d61a16813350016de866e
+curl -i -H "Accept: application/json" -X GET http://localhost:4000/tsq/skills/
 ```
 
 **Query Params**
 
-- `?id` -- the id field of the skills entry
-- `?tags` -- entries inside the tags array. You can search for an entry with multiple
-  tags by seperating the tags with a comma and entries that have ALL the tags specified will show in the results
+| Param     | Description                         |
+|:---------:|:-----------------------------------:|
+|   `?id`   | the `_id` field of the skills entry |
+|  `?tags`  | tags, seperated by comma            | 
 
 **Additional Notes**
 
@@ -61,40 +67,40 @@ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET
 **Routes**
 
 ```code
-/updateName/<id>
-```
-
-```code
-/updateTags/<id>
+/updateName/:id
+/updateTags/:id
 ```
 
 **Examples**
 
 ```bash
-curl  -H "Content-Type: application/json" -d '{"name":"newValue"}'  -X PUT http://localhost:4000/tsq/skills/updateName/5c7d61a16813350016de866e
-curl  -H "Content-Type: application/json" -d '{"tags":["newTag1", "newTag2"]}'  -X PUT http://localhost:4000/tsq/skills/updateTags/5c7d61a16813350016de866e?append=true
+curl  -H "Content-Type: application/json" -d '{ "name": "test-skill-2" }'  -X PUT http://localhost:4000/tsq/skills/updateName/<:id>
+curl  -H "Content-Type: application/json" -d '{ "tags":[ "newTag1", "newTag2" ] }'  -X PUT http://localhost:4000/tsq/skills/updateTags/<:id>
 ```
 
 **Query Params**
 
-- For `/updateName/<id>` there are no query params
-- For `/updateTags/<id>` there are `append` and `remove` params
-- to add tags to the list, use `?append=true`
-- to remove tags, use `?remove=true`
-- the system assumes append if no param is set
+`updateTags/:id`
+
+| Param         | Description                                        |
+|:-------------:|:--------------------------------------------------:|
+|   `?append`   | add tags to the skill, `true` or `false` value     |
+|  `?remove`    | tags, seperated by comma, `true` or `false` value  | 
+
+- For `/updateTags/:id` there are `append` and `remove` params
+- the system assumes `append` mode if no param is set
 
 ### DELETE
 
 **Route**
 
 ```code
-/removeEntry/<id>
+/removeEntry/:id
 ```
-
 **Example**
 
 ```bash
-curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X DELETE http://localhost:4000/tsq/skills/removeEntry/5c7d61a16813350016de866e
+curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X DELETE http://localhost:4000/tsq/skills/removeEntry/<:id>
 ```
 
 ## `/skills/users/`
@@ -111,7 +117,7 @@ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X DEL
 
 ```bash
 # register with no skill data included
-curl -H "Content-Type: application/json" POST http://localhost:4000/tsq/skills/users/register
+curl -H "Content-Type: application/json" -X POST http://localhost:4000/tsq/skills/users/register
 
 # register with skill data included
 curl -d '{ "skills": [ {"name": "5cb4c51338156e0017fbbbfe", "familiar":true, "confidenceLevel": 3} ]}' -H "Content-Type: application/json" -X POST http://localhost:4000/tsq/skills/users/register
@@ -120,18 +126,23 @@ curl -d '{ "skills": [ {"name": "5cb4c51338156e0017fbbbfe", "familiar":true, "co
 
 **Fields**
 
-`skills`: skills is an array of skills to attach to the user
-These contain a `name` (skill ObjectId, required) and `confidenceLevel` (number, optional, defaults to `0`), `familiar` (boolean, defaults to `false`)
+
+|    Fields     | Description                                  |
+|:-------------:|:--------------------------------------------:|
+|   `skills`    | an array of skills from the skill collection |
+
+* These contain a `name` (skill ObjectId, required) and `confidenceLevel` (number, optional, defaults to `0`), `familiar` (boolean, defaults to `false`)
+
 
 ### GET
 
 **Routes**
 
 ```javascript
-/findAll  					           // finds all the entries
-/findOne/key/<key> 	           // finds one entry by entry key field
-/findOne/id/<id>  	           // finds one entry by entry _id field
-/getDuplicateSkills/key/<key>  // gets duplicate skill entries for user by key, returns skill entry id and count
+/findAll  					            // finds all the entries
+/findOne/key/:key 	            // finds one entry by entry key field
+/findOne/id/:id 	              // finds one entry by entry _id field
+/getDuplicateSkills/key/:key    // gets duplicate skill entries for user by key, returns skill entry id and count
 ```
 
 **Examples**
