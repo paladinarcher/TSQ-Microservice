@@ -124,6 +124,14 @@ curl -d '{ "skills": [ {"name": "5cb4c51338156e0017fbbbfe", "familiar":true, "co
 
 ```
 
+
+**Headers**
+
+|     Headers    |        Value        |
+|:--------------:|:-------------------:| 
+|  Content-Type  |  application-json   |
+
+
 **Fields**
 
 
@@ -158,6 +166,15 @@ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET
 curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://localhost:4000/tsq/skills/users/getDuplicateSkills/key/<key>
 ```
 
+**Params**
+
+
+|    Params     | Description                                     |
+|:-------------:|:-----------------------------------------------:|
+|   `id`        | the `_id` of the entry you are trying to locate |
+|   `key`       | the short key assigned to the entry             |
+
+
 ### PUT
 
 **Routes**
@@ -190,6 +207,33 @@ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET
 
 ```
 
+
+**Headers**
+
+|     Headers    |        Value        |
+|:--------------:|:-------------------:| 
+|  Content-Type  |  application-json   |
+
+
+**Params**
+
+|    Params     | Description                                     |
+|:-------------:|:-----------------------------------------------:|
+|   `id`        | the `_id` of the entry you are trying to locate |
+|   `key`       | the short key assigned to the entry             |
+
+
+**Fields**
+
+
+|    Fields     | Description                                  |
+|:-------------:|:--------------------------------------------:|
+|   `skills`    | an array of skills from the skill collection |
+
+* These contain a `name` (skill ObjectId, required) and `confidenceLevel` (number, optional, defaults to `0`), `familiar` (boolean, defaults to `false`)
+
+
+
 ### DELETE
 
 **Routes**
@@ -207,3 +251,9 @@ curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X DEL
 # remove an entry by id
 curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X DELETE http://localhost:4000/tsq/skills/users/remove/id/<_id>
 ```
+
+
+|    Params     | Description                                     |
+|:-------------:|:-----------------------------------------------:|
+|   `id`        | the `_id` of the entry you are trying to locate |
+|   `key`       | the short key assigned to the entry             |
