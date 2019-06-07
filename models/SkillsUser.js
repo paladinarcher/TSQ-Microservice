@@ -153,6 +153,15 @@ module.exports.addSkillsByKey = async function (key, skills, callback) {
   
   const updatedStatus = await runSkillUpdate(query, updateArray);
 
+  console.log({
+    query,
+    keyData,
+    verifiedSkills,
+    verifiedSkillsWithoutDuplicates,
+    updateArray,
+    updatedStatus
+  })
+
   callback(null, {
     ...updatedStatus,
     key: keyData.toObject().key,

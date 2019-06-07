@@ -76,7 +76,10 @@ const testData = {
         name: 'basic-test-skill',
         familiar: true
       },
-      { id: '5c70404993c5e936388577d1', name: 'test-skill-with-tags' }
+      { 
+        id: '5c70404993c5e936388577d1', 
+        name: 'test-skill-with-tags' 
+      }
     ]
   },
   duplicateSkillsToAdd: {
@@ -256,6 +259,7 @@ describe('SkillsUser API Tests', () => {
 
 
   describe('/UPDATE /skills/users/addSkills/', () => {
+
     function skillAssertions(skill, skillId) {
       skill.should.be.a('object');
       skill.should.have.property('name')
@@ -265,43 +269,46 @@ describe('SkillsUser API Tests', () => {
     }
 
     it('it adds skills by name to a userskills entry', done => {
+      
       const { skillsToAdd, userEntry } = testData;
       const { key } = testData.userEntry;
-
-
+      SkillUserData.deleteOne({ key: key }, (err, result) => result )
+      
       addAUserSkillEntry(userEntry);
-
+      
       chai
-        .request(server)
-        .put(skillUserURL + '/addSkills/key/' + key)
-        .send(skillsToAdd)
-        .end((error, response) => {
-          should.exist(response.body);
-          response.body.should.be.a('object');
-          response.body.should.have.property('success').eql(true);
-          chai.assert(
-            response.body.data.payload.nModified == 1,
-            'The entry did not update'
+      .request(server)
+      .put(skillUserURL + '/addSkills/key/' + key)
+      .send(skillsToAdd)
+      .end((error, response) => {
+        should.exist(response.body);
+        console.log({responseBody: response.body.data.payload})
+        response.body.should.be.a('object');
+        response.body.should.have.property('success').eql(true);
+        chai.assert(
+          response.body.data.payload.nModified == 1,
+          'The entry did not update'
           );
-
+          
           SkillUserData.getUserDataByKey(key, (error, updatedUserData) => {
             if (error) console.log({ error })
-
+            
             updatedUserData.should.be.a('object');
             updatedUserData.should.have.property('key').eql(key)
             updatedUserData.should.have.property('skills')
             updatedUserData.skills.length.should.eql(2);
-
+            
             skillAssertions(updatedUserData.toObject().skills[0], '5c70404993c5e936388577dd')
             skillAssertions(updatedUserData.toObject().skills[1], '5c70404993c5e936388577d1')
-
+            
           })
-
+          
           done();
         });
-    });
-
-    it('does not add duplicate skills to the user', done => {
+      });
+      
+      it('does not add duplicate skills to the user', done => {
+      SkillUserData.deleteMany({}, (err, result) => console.log(result))
       const { duplicateSkillsToAdd, userEntry } = testData;
       const { key } = testData.userEntry;
 
@@ -324,12 +331,14 @@ describe('SkillsUser API Tests', () => {
           response.body.should.have.property('success').eql(true);
           
           chai.assert(
-            response.body.data.payload.nModified == 1,
+            response.body.data.payload.nModified == 0,
             'the skills were incorrectly updated'
           );
 
           SkillUserData.getUserDataByKey(key, (error, updatedUserData) => {
             if (error) console.info({ error })
+
+            console.log({ updatedUserDataSkills: updatedUserData.skills })
 
             updatedUserData.should.be.a('object');
             updatedUserData.should.have.property('key').eql(key)
