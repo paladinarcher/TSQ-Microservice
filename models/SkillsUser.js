@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const config = require('../config/database');
 const rand = require('random-key');
 const SkillData = require('./Skills');
 
@@ -126,8 +125,9 @@ module.exports.addSkillsByKey = async function (key, skills, callback) {
   }
 
   function removeDuplicateSkills (skillsArray) {
-    return skillsArray.filter((obj, pos, arr) => {
-      return arr.map(mapObj => mapObj.name._id).indexOf(obj.name._id) === pos;
+    return skillsArray.filter((skill, index, skillsArray) => {
+      if (skill.name.toString() === skill._id.toString()) return false;
+      return skillsArray.map(skill => skill._id).indexOf(skill._id) === index;
     });
   }
 
@@ -144,6 +144,7 @@ module.exports.addSkillsByKey = async function (key, skills, callback) {
     if (!skill.familiar) skill.familiar = false;
     
     return {
+      _id: skill._id,
       name: skill._id,
       confidenceLevel: skill.confidenceLevel,
       familiar: skill.familiar
@@ -155,7 +156,7 @@ module.exports.addSkillsByKey = async function (key, skills, callback) {
   callback(null, {
     ...updatedStatus,
     key: keyData.toObject().key,
-    skills: updateArray
+    skills: verifiedSkillsWithoutDuplicates
   })
 }
 
