@@ -53,8 +53,8 @@ const testData = {
         name: '5c70404993c5e936388577dd'
       },
       {
-        familiar: true,
-        confidenceLevel: 0,
+        familiar: false,
+        confidenceLevel: 3,
         _id: '5ca3918db85bad4f0f999ab1',
         name: '5c70404993c5e936388577d1'
       },
@@ -77,6 +77,33 @@ const testData = {
         familiar: true
       },
       { id: '5c70404993c5e936388577d1', name: 'test-skill-with-tags' }
+    ]
+  },
+  duplicateSkillsToAdd: {
+    skills: [
+      {
+        id: '5c70404993c5e936388577dd',
+        name: 'basic-test-skill',
+        familiar: true,
+        confidenceLevel: 0
+      },
+      {
+        id: '5c70404993c5e936388577dd',
+        name: 'basic-test-skill',
+        familiar: false,
+        confidenceLevel: 2
+      },
+      { 
+        id: '5c70404993c5e936388577d1', 
+        name: 'test-skill-with-tags',
+        familiar: false,
+        confidenceLevel: 3
+      },
+      { 
+        id: '5c70404993c5e936388577d1', 
+        name: 'test-skill-with-tags',
+        confidenceLevel: 3
+      }
     ]
   },
   skillData: {
@@ -229,18 +256,18 @@ describe('SkillsUser API Tests', () => {
 
 
   describe('/UPDATE /skills/users/addSkills/', () => {
+    function skillAssertions(skill, skillId) {
+      skill.should.be.a('object');
+      skill.should.have.property('name')
+      skill.name.should.be.a('object')
+      skill.name._id.toString().should.eql(skillId)
+      return
+    }
+
     it('it adds skills by name to a userskills entry', done => {
       const { skillsToAdd, userEntry } = testData;
-      const { testSkill1, testSkill2 } = testData.skillData;
       const { key } = testData.userEntry;
 
-      function skillAssertions(skill, skillId) {
-        skill.should.be.a('object');
-        skill.should.have.property('name')
-        skill.name.should.be.a('object')
-        skill._id.toString().should.eql(skillId)
-        return
-      }
 
       addAUserSkillEntry(userEntry);
 
@@ -265,14 +292,58 @@ describe('SkillsUser API Tests', () => {
             updatedUserData.should.have.property('skills')
             updatedUserData.skills.length.should.eql(2);
 
-            skillAssertions(updatedUserData.skills[0], '5c70404993c5e936388577dd')
-            skillAssertions(updatedUserData.skills[1], '5c70404993c5e936388577d1')
+            skillAssertions(updatedUserData.toObject().skills[0], '5c70404993c5e936388577dd')
+            skillAssertions(updatedUserData.toObject().skills[1], '5c70404993c5e936388577d1')
 
           })
 
           done();
         });
     });
+
+    it('does not add duplicate skills to the user', done => {
+      const { duplicateSkillsToAdd, userEntry } = testData;
+      const { key } = testData.userEntry;
+
+      addAUserSkillEntry(userEntry);
+
+      // add in skills manually  
+      SkillUserData
+        .addSkillsByKey(key, duplicateSkillsToAdd.skills, (error, result) => {
+          return result;
+        })
+
+      chai
+        .request(server)
+        .put(skillUserURL + '/addSkills/key/' + key)
+        .send(duplicateSkillsToAdd) // add the same skills 
+        .end((error, response) => {
+
+          should.exist(response.body);
+          response.body.should.be.a('object');
+          response.body.should.have.property('success').eql(true);
+          
+          chai.assert(
+            response.body.data.payload.nModified == 1,
+            'the skills were incorrectly updated'
+          );
+
+          SkillUserData.getUserDataByKey(key, (error, updatedUserData) => {
+            if (error) console.info({ error })
+
+            updatedUserData.should.be.a('object');
+            updatedUserData.should.have.property('key').eql(key)
+            updatedUserData.should.have.property('skills')
+            updatedUserData.skills.length.should.eql(2);
+
+            skillAssertions(updatedUserData.toObject().skills[0], '5c70404993c5e936388577dd')
+            skillAssertions(updatedUserData.toObject().skills[1], '5c70404993c5e936388577d1')
+
+            done();
+          })
+
+        })  
+    })
   });
 
   describe('/UPDATE /skills/users/removeSkills/', () => {
