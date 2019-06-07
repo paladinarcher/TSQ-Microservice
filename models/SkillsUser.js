@@ -86,25 +86,79 @@ module.exports.checkForDuplicateSkills = function (key, objectId, callback) {
   ], callback)
 }
 
-module.exports.addSkillsByKey = async function (key, data, callback) {
-  let query = { key: key };
-  let buildMassUpdateData = {
-    skills: []
-  };
-  for (let i = 0; i < data.length; i++) {
-    let result = await SkillData.findOne({ _id: data[i].id });
-    if (result !== null) {
-      let modifiedResult = result.toObject();
-      modifiedResult.name = result._id;
-      if (data[i].familiar) {
-        modifiedResult.familiar = data[i].familiar;
-      }
-      buildMassUpdateData.skills.push(modifiedResult);
+module.exports.addSkillsByKey = async function (key, skills, callback) {
+  
+  async function verifySkills (skills) {
+    let newSkillsArray = []
+    for (skill of skills) {
+      const verifiedSkill = await SkillData.findOne({name: skill.name}, (error, result) => {
+        if (!error) return result
+      })
+
+      if (!skill.familiar || skill.familiar === undefined)
+      skill.familiar = false;
+      if (!skill.confidenceLevel || skill.confidenceLevel === undefined)
+        skill.confidenceLevel = 0;
+
+      newSkillsArray.push({ 
+        name: verifiedSkill.name,
+        _id: verifiedSkill._id,
+        confidenceLevel: skill.confidenceLevel,
+        familiar: skill.familiar
+      })
     }
+    return newSkillsArray;  
   }
-  let updateQuery = { $addToSet: { skills: buildMassUpdateData.skills } };
-  SkillUserData.update(query, updateQuery, callback);
-};
+
+  async function getUserkeyData(query) {
+    const keyData = await SkillUserData.findOne(query, (error, result) => {
+      if (error) return error 
+      else return result
+    })
+    return keyData;
+  }
+
+  async function runSkillUpdate(query, updateArray) {
+    const update = await SkillUserData.updateOne(query, { skills: updateArray }, (error, result) => {
+      return result;
+    })
+    return update;
+  }
+
+  function removeDuplicateSkills (skillsArray) {
+    return skillsArray.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj.name._id).indexOf(obj.name._id) === pos;
+    });
+  }
+
+  if (skills.length < 1) return callback(null, { updatedStatus: null, key, skills });
+  
+  const query = { key: key }
+  const keyData = await getUserkeyData(query)
+  const verifiedSkills = await verifySkills(skills);
+  const currentSkills = keyData.toObject().skills;
+  const verifiedSkillsWithoutDuplicates = removeDuplicateSkills(currentSkills.concat(verifiedSkills))
+
+  const updateArray = verifiedSkillsWithoutDuplicates.map(skill => {
+    if (!skill.confidenceLevel) skill.confidenceLevel = 0;
+    if (!skill.familiar) skill.familiar = false;
+    
+    return {
+      name: skill._id,
+      confidenceLevel: skill.confidenceLevel,
+      familiar: skill.familiar
+    }
+  })
+  
+  const updatedStatus = await runSkillUpdate(query, updateArray);
+
+  callback(null, {
+    ...updatedStatus,
+    key: keyData.toObject().key,
+    skills: updateArray
+  })
+}
+
 
 module.exports.removeSkillsByKey = function (key, data, callback) {
   let query = { key: key };
