@@ -128,10 +128,11 @@ router.put('/addSkills/key/:key', (request, response, next) => {
     SkillUserData.addSkillsByKey(key, skills, (error, result) => {
       if (error) {
         response.status(500)
-        return errorResponseJson(response, 'Database Error')
+        return errorResponseJson(response, 'Server Error')
       }
+
       const payload = { payload: result }
-      response.status(200);
+      
       return successResponseJson(response, 'Update Successful', payload);
     })
   }

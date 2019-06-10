@@ -118,8 +118,8 @@ module.exports.addSkillsByKey = async function (key, skills, callback) {
   }
 
   async function runSkillUpdate(query, updateArray) {
-    const update = await SkillUserData.updateOne(query, { skills: updateArray }, (error, result) => {
-      return result;
+    const update = await SkillUserData.findOneAndUpdate(query, { $set: { skills: updateArray }, }, { useFindAndModify: false }, (err, doc, res) => {
+      return doc;
     })
     return update;
   }
@@ -153,20 +153,10 @@ module.exports.addSkillsByKey = async function (key, skills, callback) {
   
   const updatedStatus = await runSkillUpdate(query, updateArray);
 
-  console.log({
-    query,
-    keyData,
-    verifiedSkills,
-    verifiedSkillsWithoutDuplicates,
-    updateArray,
-    updatedStatus
+  callback(null, {
+    doc: updatedStatus._doc,
   })
 
-  callback(null, {
-    ...updatedStatus,
-    key: keyData.toObject().key,
-    skills: verifiedSkillsWithoutDuplicates
-  })
 }
 
 
