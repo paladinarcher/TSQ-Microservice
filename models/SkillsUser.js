@@ -88,17 +88,17 @@ module.exports.checkForDuplicateSkills = function (key, objectId, callback) {
 module.exports.addSkillsByKey = async function (key, skills, callback) {
   
   async function verifySkills (skills) {
-    let newSkillsArray = []
+    let newSkillsArray = [];
     for (skill of skills) {
       const verifiedSkill = await SkillData.findOne({name: skill.name}, (error, result) => {
         if (!error) return result
       })
-
+      
       if (!skill.familiar || skill.familiar === undefined)
       skill.familiar = false;
       if (!skill.confidenceLevel || skill.confidenceLevel === undefined)
-        skill.confidenceLevel = 0;
-
+      skill.confidenceLevel = 0;
+      
       newSkillsArray.push({ 
         name: verifiedSkill.name,
         _id: verifiedSkill._id,
@@ -106,6 +106,7 @@ module.exports.addSkillsByKey = async function (key, skills, callback) {
         familiar: skill.familiar
       })
     }
+
     return newSkillsArray;  
   }
 
@@ -127,7 +128,8 @@ module.exports.addSkillsByKey = async function (key, skills, callback) {
   function removeDuplicateSkills (skillsArray) {
     return skillsArray.filter((skill, index, skillsArray) => {
       if (skill.name.toString() === skill._id.toString()) return false;
-      return skillsArray.map(skill => skill._id).indexOf(skill._id) === index;
+      const loc = skillsArray.findIndex((obj, i, arr) => obj['name'].toString() == skill['name'].toString());
+      return loc == index;
     });
   }
 
