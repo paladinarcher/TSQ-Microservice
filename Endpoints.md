@@ -203,7 +203,7 @@ curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "<skill Objec
 curl  -H "Content-Type: application/json" -d '{"skills": [{"name": "<skill ObjectID>", "confidenceLevel": 3 }]}'  -X PUT http://localhost:4000/tsq/skills/users/updateConfidenceInfo/key/<key>
 
 # remove Duplicate Skills by Key
-curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET http://localhost:4000/tsq/skills/users/removeDuplicateSkills/key/<key>
+curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X PUT http://localhost:4000/tsq/skills/users/removeDuplicateSkills/key/<key>
 
 ```
 

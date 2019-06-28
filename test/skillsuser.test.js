@@ -25,13 +25,13 @@ const testData = {
       {
         familiar: true,
         confidenceLevel: 0,
-        _id: '5ca3918cb85bad4f0f999aae',
+        _id: '5c70404993c5e936388577dd',
         name: '5c70404993c5e936388577dd'
       },
       {
         familiar: true,
         confidenceLevel: 0,
-        _id: '5ca3918db85bad4f0f999ab1',
+        _id: '5c70404993c5e936388577d1',
         name: '5c70404993c5e936388577d1'
       }
     ]
@@ -43,25 +43,25 @@ const testData = {
       {
         familiar: true,
         confidenceLevel: 0,
-        _id: '5ca3918cb85bad4f0f999aae',
+        _id: '5c70404993c5e936388577dd',
         name: '5c70404993c5e936388577dd'
       },
       {
         familiar: true,
         confidenceLevel: 0,
-        _id: '5ca3918cb85bad4f0f999aae',
+        _id: '5c70404993c5e936388577dd',
         name: '5c70404993c5e936388577dd'
       },
       {
-        familiar: true,
-        confidenceLevel: 0,
-        _id: '5ca3918db85bad4f0f999ab1',
+        familiar: false,
+        confidenceLevel: 3,
+        _id: '5c70404993c5e936388577d1',
         name: '5c70404993c5e936388577d1'
       },
       {
         familiar: true,
         confidenceLevel: 0,
-        _id: '5ca3918db85bad4f0f999ab1',
+        _id: '5c70404993c5e936388577d1',
         name: '5c70404993c5e936388577d1'
       }
     ]
@@ -76,7 +76,37 @@ const testData = {
         name: 'basic-test-skill',
         familiar: true
       },
-      { id: '5c70404993c5e936388577d1', name: 'test-skill-with-tags' }
+      { 
+        id: '5c70404993c5e936388577d1', 
+        name: 'test-skill-with-tags' 
+      }
+    ]
+  },
+  duplicateSkillsToAdd: {
+    skills: [
+      {
+        id: '5c70404993c5e936388577dd',
+        name: 'basic-test-skill',
+        familiar: true,
+        confidenceLevel: 0
+      },
+      {
+        id: '5c70404993c5e936388577dd',
+        name: 'basic-test-skill',
+        familiar: false,
+        confidenceLevel: 2
+      },
+      { 
+        id: '5c70404993c5e936388577d1', 
+        name: 'test-skill-with-tags',
+        familiar: false,
+        confidenceLevel: 3
+      },
+      { 
+        id: '5c70404993c5e936388577d1', 
+        name: 'test-skill-with-tags',
+        confidenceLevel: 3
+      }
     ]
   },
   skillData: {
@@ -229,50 +259,106 @@ describe('SkillsUser API Tests', () => {
 
 
   describe('/UPDATE /skills/users/addSkills/', () => {
-    it('it adds skills by name to a userskills entry', done => {
-      const { skillsToAdd, userEntry } = testData;
-      const { testSkill1, testSkill2 } = testData.skillData;
-      const { key } = testData.userEntry;
+    beforeEach(done => {
+      SkillUserData.deleteMany({}, err => {
+        done();
+      });
+    });
 
-      function skillAssertions(skill, skillId) {
-        skill.should.be.a('object');
-        skill.should.have.property('name')
-        skill.name.should.be.a('object')
-        skill._id.toString().should.eql(skillId)
-        return
-      }
-
+    const { userEntry, userEntryWithSkills, skillsToAdd } = testData;
+    const singleSkill = { skills: [ skillsToAdd.skills[0] ]}
+    
+    it('should add a skill to the user key', done => {
       addAUserSkillEntry(userEntry);
+      const { key } = userEntry
+      
+      chai
+        .request(server)
+        .put(`${skillUserURL}/addSkills/key/${key}`)
+        .send(singleSkill)
+        .end((error, response) => {
+          chai.assert(response, 'response does not exist')
+
+          const { body, status } = response; 
+          const { success, message, data } = response.body;
+          const { payload } = response.body.data;
+          const { doc } = payload
+
+          chai.assert(status === 200, 'status does not eql 200')
+          chai.assert(typeof(body) === 'object', 'response type is not an object')
+          chai.assert(success === true, 'success does not eql true')
+          chai.assert(message === 'Update Successful', 'update msg does not match')
+          chai.assert(typeof(data) === 'object', 'data is not an object')
+          chai.assert(typeof(payload) === 'object', 'payload type incorrect')
+          chai.assert(typeof(doc) === 'object', 'doc type incorrect')
+          chai.assert(doc.key === key, 'key is not matching')
+          chai.assert(doc.skills.length === 1, 'skill len is not correct')
+          chai.assert(doc.skills[0]._id === '5c70404993c5e936388577dd', 'skill at index 0 incorrect')
+          done();
+        })
+    })
+
+    it('should add multiple skills at once to a user key', done => {
+      addAUserSkillEntry(userEntry);
+      const { key } = userEntry
 
       chai
         .request(server)
-        .put(skillUserURL + '/addSkills/key/' + key)
+        .put(`${skillUserURL}/addSkills/key/${key}`)
         .send(skillsToAdd)
         .end((error, response) => {
-          should.exist(response.body);
-          response.body.should.be.a('object');
-          response.body.should.have.property('success').eql(true);
-          chai.assert(
-            response.body.data.payload.nModified == 1,
-            'The entry did not update'
-          );
+          chai.assert(response, 'response does not exist')
 
-          SkillUserData.getUserDataByKey(key, (error, updatedUserData) => {
-            if (error) console.log({ error })
+          const { body, status } = response; 
+          const { success, message, data } = response.body;
+          const { payload } = response.body.data;
+          const { doc } = payload
 
-            updatedUserData.should.be.a('object');
-            updatedUserData.should.have.property('key').eql(key)
-            updatedUserData.should.have.property('skills')
-            updatedUserData.skills.length.should.eql(2);
+          chai.assert(status === 200, 'status does not eql 200')
+          chai.assert(typeof(body) === 'object', 'response type is not an object')
+          chai.assert(success === true, 'success does not eql true')
+          chai.assert(message === 'Update Successful', 'update msg does not match')
+          chai.assert(typeof(data) === 'object', 'data is not an object')
+          chai.assert(typeof(payload) === 'object', 'payload type incorrect')
+          chai.assert(typeof(doc) === 'object', 'doc type incorrect')
+          chai.assert(doc.key === key, 'key is not matching')
+          chai.assert(doc.skills.length === 2, 'skill len is not correct')
+          chai.assert(doc.skills[0]._id === '5c70404993c5e936388577dd', 'skill at index 0 incorrect')
+          chai.assert(doc.skills[1]._id === '5c70404993c5e936388577d1', 'skill at index 1 incorrect')
+          done();  
+        })
+    })
 
-            skillAssertions(updatedUserData.skills[0], '5c70404993c5e936388577dd')
-            skillAssertions(updatedUserData.skills[1], '5c70404993c5e936388577d1')
+    it('should not add a duplicate of a skill that has already been added', done => {
+      addAUserSkillEntry(userEntryWithSkills);
+      const { key } = userEntryWithSkills;
 
-          })
+      chai
+        .request(server)
+        .put(`${skillUserURL}/addSkills/key/${key}`)
+        .send(skillsToAdd)
+        .end((error, response) => {
+          chai.assert(response, 'response does not exist')
 
-          done();
-        });
-    });
+          const { body, status } = response; 
+          const { success, message, data } = response.body;
+          const { payload } = response.body.data;
+          const { doc } = payload
+
+          chai.assert(status === 200, 'status does not eql 200')
+          chai.assert(typeof(body) === 'object', 'response type is not an object')
+          chai.assert(success === true, 'success does not eql true')
+          chai.assert(message === 'Update Successful', 'update msg does not match')
+          chai.assert(typeof(data) === 'object', 'data is not an object')
+          chai.assert(typeof(payload) === 'object', 'payload type incorrect')
+          chai.assert(typeof(doc) === 'object', 'doc type incorrect')
+          chai.assert(doc.key === key, 'key is not matching')
+          chai.assert(doc.skills.length === 2, 'skill len is not correct')
+          chai.assert(doc.skills[0]._id === '5c70404993c5e936388577dd', 'skill at index 0 incorrect')
+          chai.assert(doc.skills[1]._id === '5c70404993c5e936388577d1', 'skill at index 1 incorrect')
+          done();  
+        })
+    })
   });
 
   describe('/UPDATE /skills/users/removeSkills/', () => {
