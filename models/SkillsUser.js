@@ -86,14 +86,38 @@ module.exports.checkForDuplicateSkills = function (key, objectId, callback) {
 }
 
 module.exports.addSkillsByKey = async function (key, skills, callback) {
-  
   async function verifySkills (skills) {
     let newSkillsArray = [];
     for (skill of skills) {
-      const verifiedSkill = await SkillData.findOne({name: skill.name}, (error, result) => {
-        if (!error) return result
-      })
       
+      let verifiedSkill; 
+      verifiedSkill = await checkSkillInDB(skill);
+
+      async function checkSkillInDB(skill){
+        const check = await SkillData.findOne({name: skill.name}, result => {
+          if(result){
+            return result;
+          }else if(!result){
+            return null;
+          }
+        })
+        return check;
+      }
+
+      if(verifiedSkill === null){
+        const addNewSkillDB = await addNewSkill(skill);
+        async function addNewSkill(skill){
+          let newSkill = new SkillData({
+            name: skill.name,
+          })
+          const newSkillResult = await newSkill.save().then(data => {
+            return data;
+          })
+          return newSkillResult;
+        }
+        verifiedSkill = await checkSkillInDB(addNewSkillDB);
+      }
+
       if (!skill.familiar || skill.familiar === undefined)
       skill.familiar = false;
       if (!skill.confidenceLevel || skill.confidenceLevel === undefined)
