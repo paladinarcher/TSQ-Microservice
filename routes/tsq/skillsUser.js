@@ -19,12 +19,6 @@ const successResponseJson = (response, message, payload) => {
   });
 };
 
-function removeDuplicates(myArr, prop) {
-  return myArr.filter((obj, pos, arr) => {
-      return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
-  });
-}
-
 // POST
 router.post('/register', (request, response, next) => {
   let userData = new SkillUserData();
@@ -124,25 +118,25 @@ router.get('/getDuplicateSkills/key/:key', (request, response, next) => {
   })
 })
 
-// PUT
-router.put('/addSkills/key/:key', async (request, response, next) => {
-  let skills = request.body.skills.filter(obj => obj.hasOwnProperty('id'));
-  skills = removeDuplicates(skills, 'name');
-  SkillUserData.getUserDataByKey(request.params.key, (error, data) => {
-    if (data !== null) {
-      let updatedSkills = data.skills.concat(skills)
-      updatedSkills = removeDuplicates(updatedSkills, 'name');
-      SkillUserData.addSkillsByKey(request.params.key, updatedSkills, (error, result) => {
-        if (error) {
-          return errorResponseJson(response, error);
-        } else {
-          let payload = { payload: result };
-          return successResponseJson(response, 'Update Complete', payload);
-        }
-      })
-    }
-  });
-});
+router.put('/addSkills/key/:key', (request, response, next) => {
+  if (!request.body.skills || request.body.skills.length === 0) {
+    response.status(400)
+    return errorResponseJson(response, 'skills parameter is required')
+  } else {
+    const { skills } = request.body
+    const { key } = request.params
+    SkillUserData.addSkillsByKey(key, skills, (error, result) => {
+      if (error) {
+        response.status(500)
+        return errorResponseJson(response, 'Server Error')
+      }
+
+      const payload = { payload: result }
+      
+      return successResponseJson(response, 'Update Successful', payload);
+    })
+  }
+})
 
 router.put('/removeSkills/key/:key', (request, response, next) => {
   SkillUserData.removeSkillsByKey(

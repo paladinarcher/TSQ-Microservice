@@ -1,0 +1,36 @@
+pipeline {
+	agent {
+		dockerfile {
+			filename "pipeline/jenkins/Dockerfile"
+			args "--entrypoint=''"
+		}
+	}
+	environment {
+		LC_ALL='en_US.UTF-8'
+		LANG='en_US.UTF-8'
+	}
+	stages {
+		stage('Build API') {
+			steps {
+				sh "npm i"
+			}
+		}
+		stage('Test') {
+			steps {
+				echo "Run tests"
+				sh "mongo --version"
+				sh "mongod &"
+				sh "sleep 30s"
+				sh "npm test"
+			}
+		}
+		stage('Deploy') {
+			steps {
+				sh "tar -czf /tmp/tsq.tar.gz ."
+				sh "scp -r -o StrictHostKeyChecking=no -i /home/.ssh/prod-instance.pem /tmp/tsq.tar.gz ec2-user@tsq.developerlevel.com:/home/ec2-user/src/tsq/pipeline/prod/"
+				sh "ssh -o StrictHostKeyChecking=no -i /home/.ssh/prod-instance.pem ec2-user@tsq.developerlevel.com 'cd src/tsq && /usr/bin/git pull'"
+				sh "ssh -o StrictHostKeyChecking=no -i /home/.ssh/prod-instance.pem ec2-user@tsq.developerlevel.com source /home/ec2-user/src/tsq/pipeline/prod/docker-build.sh"
+			}
+		}
+	}
+}

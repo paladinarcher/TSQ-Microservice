@@ -46,6 +46,11 @@ router.get('/', (req, res, next) => {
 			if (err) {
 			return errorResponseJson(res, err)
 		} else {
+			if (!data || data.length === null) {
+				res.status(404)
+				let payload = { entries: 0, payload: data }
+				return successResponseJson(res, 'No Skill Found By that Id', payload)
+			}
 			let payload = { entries: data.length, payload: data }
 			return successResponseJson(res, 'Skill Entry Located', payload)
 		}
