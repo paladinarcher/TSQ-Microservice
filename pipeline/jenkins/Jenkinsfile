@@ -126,14 +126,14 @@ pipeline {
 				sh "npm test"
 			}
 		}
-		// stage('Deploy') {
-		// 	steps {
-		// 		sh "tar -czf /tmp/tsq.tar.gz ."
-		// 		sh "scp -r -o StrictHostKeyChecking=no -i /home/.ssh/rigel-alpha.pem /tmp/tsq.tar.gz ec2-user@stage.developerlevel.com:/home/ec2-user/tsq/pipeline/prod/"
-		// 		sh "ssh -o StrictHostKeyChecking=no -i /home/.ssh/rigel-alpha.pem ec2-user@stage.developerlevel.com 'cd tsq && /usr/bin/git pull'"
-		// 		sh "ssh -o StrictHostKeyChecking=no -i /home/.ssh/rigel-alpha.pem ec2-user@stage.developerlevel.com source /home/ec2-user/tsq/pipeline/prod/docker-build.sh"
-		// 	}
-		// }
+		stage('Deploy') {
+			steps {
+				sh "tar -czf /tmp/tsq.tar.gz ."
+				sh "scp -r -o StrictHostKeyChecking=no -i /home/.ssh/rigel-alpha.pem /tmp/tsq.tar.gz ec2-user@stage.developerlevel.com:/home/ec2-user/tsq/pipeline/prod/"
+				sh "ssh -o StrictHostKeyChecking=no -i /home/.ssh/rigel-alpha.pem ec2-user@stage.developerlevel.com 'cd tsq && /usr/bin/git pull'"
+				sh "ssh -o StrictHostKeyChecking=no -i /home/.ssh/rigel-alpha.pem ec2-user@stage.developerlevel.com source /home/ec2-user/tsq/pipeline/prod/docker-build.sh"
+			}
+		}
 	}	
 	post {
         always {
